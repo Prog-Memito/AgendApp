@@ -1,2 +1,2 @@
 # AgendApp
-Es una aplicacion movil creada para ayudar al usuario o pacientes del area de la Salud CESFAM permitiendole agendar sus horas 
+Es una aplicacion movil creada para ayudar al usuario o pacientes del area de la Salud CESFAM permitiendole agendar horas solamente para controles medicos y psicologo (kinesiologo a futuras versiones) dentro de un rango de 1 a 2 dias, al usuario le mostrara en pantalla los dias y horas disponibles y el nombre del profesional encargado, al asignar su dia, hora y profesional al usuario se le enviara al correo electronico con los datos de la fecha, hora, profesional y box asignado asi mismo marcando como evento en el calendario del dispositivo y activando un recordatorio cuando falte 1 hora para su hora medica.
