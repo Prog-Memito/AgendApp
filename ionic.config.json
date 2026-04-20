@@ -1,0 +1,7 @@
+{
+  "name": "AgendApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
