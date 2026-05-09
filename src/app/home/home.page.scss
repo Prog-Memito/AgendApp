@@ -1,27 +1,60 @@
-#container {
+:host {
+  --bg-color: #f4f7fa;
+  --primary-blue: #1a6dff;
+  --text-dark: #001a33;
+  --text-gray: #66788a;
+}
+
+.home-content {
+  --background: var(--bg-color);
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around; // Distribuye el espacio entre logo, texto y botón
+  height: 100%;
+  padding: 40px 20px;
+}
+
+.logo-section {
+  .main-logo {
+    width: 300px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.05));
+  }
+}
+
+.welcome-section {
   text-align: center;
+  
+  .welcome-title {
+    color: var(--text-dark);
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  .welcome-subtitle {
+    color: var(--text-gray);
+    font-size: 1.2rem;
+    margin: 0;
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
+.action-section {
+  width: 100%;
+  max-width: 400px;
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+  .start-button {
+    --background: var(--primary-blue);
+    --color: #ffffff;
+    --border-radius: 12px;
+    height: 60px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: none;
+    --box-shadow: 0 8px 20px rgba(26, 109, 255, 0.2);
+  }
 }

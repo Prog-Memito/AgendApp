@@ -1,0 +1,41 @@
+<ion-content [fullscreen]="true" class="login-content">
+  <div class="login-container">
+    
+    <div class="header-section">
+      <img src="assets/logo-agendapp-2.png" alt="AgendApp" class="app-logo">
+      <p class="app-subtitle">Sistema de Agendamiento Médico</p>
+    </div>
+
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title class="card-title">Iniciar Sesión</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="input-group">
+          <ion-label class="input-label">RUN (Rol Único Nacional)</ion-label>
+          <div class="input-box">
+            <ion-input type="text" placeholder="12.345.678-9"></ion-input>
+          </div>
+          <span class="input-helper">Formato: xx.xxx.xxx-x</span>
+        </div>
+
+        <div class="input-group">
+          <ion-label class="input-label">Contraseña</ion-label>
+          <div class="input-box">
+            <ion-input type="password" placeholder="********"></ion-input>
+          </div>
+        </div>
+
+        <ion-button expand="block" class="main-button">
+          Iniciar Sesión
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button expand="block" fill="outline" class="secondary-button" (click)="irAlRegistro()">
+      Crear una Cuenta
+    </ion-button>
+
+  </div>
+</ion-content>

@@ -1,20 +1,20 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="home-content">
+  <div class="home-container">
+    
+    <div class="logo-section">
+      <img src="assets/logo-agendapp-2.png" alt="AgendApp Logo" class="main-logo">
+    </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+    <div class="welcome-section">
+      <h1 class="welcome-title">Bienvenido a AgendApp</h1>
+      <p class="welcome-subtitle">Tu salud en un solo lugar</p>
+    </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <div class="action-section">
+      <ion-button expand="block" (click)="irAlLogin()" class="start-button">
+        Comenzar
+      </ion-button>
+    </div>
+
   </div>
 </ion-content>

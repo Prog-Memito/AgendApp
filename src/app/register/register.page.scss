@@ -1,0 +1,213 @@
+:host {
+  --bg-page: #f5f9f7; 
+  --brand-green: #00a650; 
+  --brand-blue: #1a6dff; // Azul para la caja de info del paso 2
+  --text-primary: #011a33; 
+  --text-secondary: #738496; 
+  --border-light: #e1e8ed;
+}
+
+.register-content {
+  --background: var(--bg-page);
+}
+
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+}
+
+// Encabezado
+.header-section {
+  text-align: center;
+  margin-bottom: 20px;
+
+  .icon-circle {
+    background-color: var(--brand-green);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    box-shadow: 0 4px 12px rgba(0, 166, 80, 0.15);
+
+    ion-icon {
+      color: white;
+      font-size: 38px;
+    }
+  }
+
+  .page-title {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 0;
+  }
+
+  .page-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 4px;
+  }
+}
+
+// La Tarjeta (Card)
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  margin: 0 0 20px 0;
+  padding: 10px 5px;
+
+  .step-indicator {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 10px 0 15px 15px;
+  }
+}
+
+// Caja de información del Paso 2
+.info-box {
+  background: #edf4ff; 
+  padding: 16px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .info-label {
+    color: var(--brand-blue);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .info-value {
+    color: var(--brand-blue);
+    font-size: 1.1rem;
+    font-weight: 800;
+  }
+
+  .info-subtext {
+    color: var(--brand-blue);
+    opacity: 0.8;
+    font-size: 0.75rem;
+    margin: 4px 0 0 0;
+  }
+}
+
+// Estilo de Inputs
+.input-group {
+  margin-bottom: 20px;
+
+  .input-label {
+    display: block;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .input-box {
+    border: 1.5px solid var(--border-light);
+    border-radius: 14px;
+    padding: 0 16px;
+    background: #ffffff;
+    transition: border-color 0.2s ease;
+
+    &:focus-within {
+      border-color: var(--brand-green); 
+    }
+
+    ion-input {
+      --padding-top: 14px;
+      --padding-bottom: 14px;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+  }
+
+  // AJUSTE PARA EL BOTÓN DEL OJO
+  .password-field {
+    display: flex;
+    align-items: center;
+
+    ion-input {
+      flex: 1;
+      --padding-end: 8px;
+    }
+
+    .eye-button {
+      --color: var(--text-secondary);
+      --padding-start: 0;
+      --padding-end: 0;
+      height: 24px;
+      margin: 0;
+      font-size: 1.4rem;
+      
+      ion-icon {
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  .input-helper {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    margin-top: 6px;
+    display: block;
+    line-height: 1.3;
+  }
+}
+
+// Fila de botones del Paso 2
+.buttons-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  align-items: center;
+
+  .back-button {
+    flex: 1;
+    --color: var(--text-secondary);
+    --background: #f0f2f5;
+    --border-radius: 14px;
+    height: 56px;
+    font-weight: 700;
+    margin: 0;
+    text-transform: none;
+  }
+}
+
+// Botones Generales
+.main-green-button {
+  --background: var(--brand-green);
+  --color: #ffffff;
+  --border-radius: 14px;
+  height: 56px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  text-transform: none;
+  --box-shadow: none;
+}
+
+.outline-green-button {
+  width: 100%;
+  max-width: 400px;
+  --color: var(--brand-green);
+  --border-color: var(--brand-green);
+  --border-radius: 14px;
+  --border-width: 2px;
+  height: 56px;
+  font-weight: 700;
+  text-transform: none;
+  --background: transparent;
+}

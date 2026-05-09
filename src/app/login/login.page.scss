@@ -1,0 +1,116 @@
+:host {
+  --bg-color: #f4f7fa;
+  --primary-blue: #1a6dff;
+  --text-dark: #011a33;
+  --text-gray: #738496;
+  --input-border: #d1d9e0; // El color del recuadro
+}
+
+.login-content {
+  --background: var(--bg-color);
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 24px;
+}
+
+.header-section {
+  text-align: center;
+  margin-bottom: 24px;
+
+  .app-logo {
+    width: 240px;
+    height: auto;
+    margin-bottom: 15px;
+  }
+
+  .app-subtitle {
+    color: var(--text-gray);
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 24px; // Bordes bien curvos como el Figma
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+  margin: 0 0 24px 0;
+  padding: 16px 8px;
+
+  .card-title {
+    color: var(--text-dark);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+}
+
+.input-group {
+  margin-bottom: 20px;
+
+  .input-label {
+    display: block;
+    color: var(--text-dark);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+  }
+
+  // EL RECUADRO: Aquí está lo que faltaba
+  .input-box {
+    border: 1.5px solid var(--input-border);
+    border-radius: 12px;
+    padding: 2px 12px;
+    background: #ffffff;
+    transition: border-color 0.2s;
+
+    &:focus-within {
+      border-color: var(--primary-blue);
+    }
+
+    ion-input {
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+      font-size: 1rem;
+    }
+  }
+
+  .input-helper {
+    color: var(--text-gray);
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: block;
+  }
+}
+
+.main-button {
+  --background: var(--primary-blue);
+  --color: #ffffff;
+  --border-radius: 12px;
+  height: 56px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-top: 10px;
+  text-transform: none;
+  --box-shadow: none;
+}
+
+.secondary-button {
+  width: 100%;
+  max-width: 400px;
+  --color: var(--primary-blue);
+  --border-color: var(--primary-blue);
+  --border-radius: 12px;
+  --border-width: 2px;
+  height: 56px;
+  font-weight: 700;
+  text-transform: none;
+}
