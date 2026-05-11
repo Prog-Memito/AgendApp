@@ -1,0 +1,52 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>
+      <div class="header-content">
+        <span class="app-name">AgendApp</span>
+        <small class="user-id">Usuario</small>
+      </div>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button color="danger" (click)="logout()">Cerrar Sesión</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="welcome-container">
+    <h1>Bienvenido</h1>
+    <p>¿Qué deseas hacer hoy?</p>
+  </div>
+
+  <div class="menu-cards">
+    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/agendar">
+      <div class="icon-container blue-icon" slot="start">
+        <ion-icon name="add-outline"></ion-icon>
+      </div>
+      <ion-label>
+        <h2>Agendar Hora</h2>
+        <p>Reserva una nueva cita médica</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/mis-horas">
+      <div class="icon-container purple-icon" slot="start">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+      <ion-label>
+        <h2>Ver Mis Horas</h2>
+        <p>Consulta tus citas agendadas</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/perfil">
+      <div class="icon-container green-icon" slot="start">
+        <ion-icon name="person-outline"></ion-icon>
+      </div>
+      <ion-label>
+        <h2>Mi Perfil</h2>
+        <p>Administra tu información</p>
+      </ion-label>
+    </ion-item>
+  </div>
+</ion-content>

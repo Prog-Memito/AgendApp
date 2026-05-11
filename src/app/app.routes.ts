@@ -18,5 +18,11 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./auth/register/register.page').then( m => m.RegisterPage)
   },
+  //Pagina Home para el ususario comun
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/paciente/home/home.page').then( m => m.HomePage)
+  },
+
 
 ];
