@@ -20,9 +20,9 @@ export const routes: Routes = [
   },
   //Pagina Home para el ususario comun
   {
-    path: 'home',
-    loadComponent: () => import('./pages/paciente/home/home.page').then( m => m.HomePage)
-  },
+    path: 'paciente-home',
+    loadComponent: () => import('./pages/paciente/home/home.page').then(m => m.InicioPage)
+  }
 
 
 ];

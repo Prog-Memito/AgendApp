@@ -1,46 +1,77 @@
-.header-content {
-  display: flex;
-  flex-direction: column;
-  .app-name { font-weight: bold; font-size: 1.2rem; }
-  .user-id { font-size: 0.8rem; color: #666; font-weight: normal; }
+// Fondo general
+ion-content {
+  --background: #f8faff;
 }
 
+// Header Limpio y Blanco
+.custom-header {
+  --background: #ffffff;
+  --border-width: 0;
+  padding: 10px 16px;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  
+  .app-name {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: #011a33;
+    line-height: 1;
+  }
+  
+  .user-id {
+    font-size: 0.85rem;
+    color: #738496;
+    margin-top: 4px;
+  }
+}
+
+.btn-logout {
+  --padding-end: 0;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: none;
+}
+
+// Contenido de bienvenida
 .welcome-container {
   text-align: center;
-  margin: 2rem 0;
-  h1 { font-weight: bold; font-size: 2.2rem; margin-bottom: 0.5rem; }
-  p { color: #666; font-size: 1.1rem; }
+  margin: 3rem 0 2rem;
+  h1 { font-weight: 800; font-size: 2.5rem; color: #011a33; margin-bottom: 5px; }
+  p { color: #738496; font-size: 1.1rem; margin: 0; }
 }
 
-.menu-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
+// Tarjetas Pro
 .menu-item {
   --background: #ffffff;
-  --padding-start: 15px;
-  --padding-top: 15px;
-  --padding-bottom: 15px;
+  --border-radius: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
   border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-bottom: 10px;
 
-  h2 { font-weight: 600; font-size: 1.2rem; margin-bottom: 4px; }
-  p { font-size: 0.9rem; color: #777; }
+  h2 { font-weight: 700; font-size: 1.3rem; color: #011a33; }
+  p { font-size: 0.95rem; color: #738496; }
 }
 
 .icon-container {
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 26px;
 }
 
-.blue-icon { background: #eef2ff; color: #3b82f6; }
-.purple-icon { background: #f5f3ff; color: #8b5cf6; }
-.green-icon { background: #f0fdf4; color: #22c55e; }
+.blue-icon { background: #e6f0ff; color: #1a6dff; }
+.purple-icon { background: #f3ebff; color: #a855f7; }
+.green-icon { background: #e8f7f0; color: #22c55e; }

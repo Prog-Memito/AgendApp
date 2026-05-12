@@ -58,8 +58,10 @@ export class LoginPage {
   }
 
   iniciarSesion() {
-    this.router.navigate(['/home']);
-  }
+      console.log('Iniciando sesión con:', this.rutValue);
+      // Cambiamos '/home' por la ruta del home de paciente
+      this.router.navigate(['/paciente-home']); 
+    }
 
   irAlRegistro() {
     this.router.navigate(['/register']);

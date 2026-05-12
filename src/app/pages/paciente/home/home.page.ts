@@ -4,10 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Router, RouterModule } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { addOutline, calendarOutline, personOutline } from 'ionicons/icons';
+import { 
+  addOutline, 
+  calendarOutline, 
+  personOutline, 
+  chevronForwardOutline 
+} from 'ionicons/icons';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-home-paciente',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
@@ -15,14 +20,22 @@ import { addOutline, calendarOutline, personOutline } from 'ionicons/icons';
 })
 export class InicioPage {
   private router = inject(Router);
+  rutValue: string = '12.345.678-K';
 
   constructor() {
-    // Registrar los iconos que usamos en el HTML
-    addIcons({ addOutline, calendarOutline, personOutline });
+    addIcons({ 
+      addOutline, 
+      calendarOutline, 
+      personOutline, 
+      chevronForwardOutline 
+    });
   }
 
   logout() {
-    // Aquí llamarás a tu AuthService.logout() más adelante
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
+
+  irAAgendar() { console.log('Agendar'); }
+  irAMisHoras() { console.log('Mis Horas'); }
+  irAPerfil() { console.log('Perfil'); }
 }

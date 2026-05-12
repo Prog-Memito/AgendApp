@@ -1,14 +1,14 @@
-<ion-header [translucent]="true" class="ion-no-border">
-  <ion-toolbar>
-    <ion-title>
-      <div class="header-content">
+<ion-header class="ion-no-border">
+  <ion-toolbar mode="md" class="custom-header">
+    <div class="header-container">
+      <div class="user-info">
         <span class="app-name">AgendApp</span>
-        <small class="user-id">Usuario</small>
+        <span class="user-id">Usuario {{rutValue}}</span>
       </div>
-    </ion-title>
-    <ion-buttons slot="end">
-      <ion-button color="danger" (click)="logout()">Cerrar Sesión</ion-button>
-    </ion-buttons>
+      <ion-button fill="clear" color="danger" (click)="logout()" class="btn-logout">
+        Cerrar Sesión
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +19,7 @@
   </div>
 
   <div class="menu-cards">
-    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/agendar">
+    <ion-item button detail="true" lines="none" class="menu-item" (click)="irAAgendar()">
       <div class="icon-container blue-icon" slot="start">
         <ion-icon name="add-outline"></ion-icon>
       </div>
@@ -29,7 +29,7 @@
       </ion-label>
     </ion-item>
 
-    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/mis-horas">
+    <ion-item button detail="true" lines="none" class="menu-item" (click)="irAMisHoras()">
       <div class="icon-container purple-icon" slot="start">
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
@@ -39,7 +39,7 @@
       </ion-label>
     </ion-item>
 
-    <ion-item button detail="true" lines="none" class="menu-item" routerLink="/paciente/perfil">
+    <ion-item button detail="true" lines="none" class="menu-item" (click)="irAPerfil()">
       <div class="icon-container green-icon" slot="start">
         <ion-icon name="person-outline"></ion-icon>
       </div>
