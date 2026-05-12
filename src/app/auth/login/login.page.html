@@ -15,19 +15,31 @@
         <div class="input-group">
           <ion-label class="input-label">RUN (Rol Único Nacional)</ion-label>
           <div class="input-box">
-            <ion-input type="text" placeholder="12.345.678-9"></ion-input>
+            <ion-input 
+              type="text" 
+              placeholder="12.345.678-9"
+              [value]="rutValue"
+              (ionInput)="onRutInput($event)"
+              maxlength="12">
+            </ion-input>
           </div>
           <span class="input-helper">Formato: xx.xxx.xxx-x</span>
         </div>
 
         <div class="input-group">
           <ion-label class="input-label">Contraseña</ion-label>
-          <div class="input-box">
-            <ion-input type="password" placeholder="********"></ion-input>
+          <div class="input-box pass-box">
+            <ion-input 
+              [type]="passwordType" 
+              placeholder="********">
+            </ion-input>
+            <ion-button fill="clear" (click)="togglePassword()" class="eye-btn">
+              <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
           </div>
         </div>
 
-        <ion-button expand="block" class="main-button">
+        <ion-button expand="block" class="main-button" (click)="iniciarSesion()">
           Iniciar Sesión
         </ion-button>
       </ion-card-content>
