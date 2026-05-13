@@ -18,15 +18,17 @@ export const routes: Routes = [
     path: 'register',
     loadComponent: () => import('./auth/register/register.page').then( m => m.RegisterPage)
   },
-  //Pagina Home para el ususario comun
+  // Pagina Home para el usuario comun
   {
     path: 'paciente-home',
     loadComponent: () => import('./pages/paciente/home/home.page').then(m => m.InicioPage)
-  },  {
+  },
+  {
+    path: 'perfil',
+    loadComponent: () => import('./pages/paciente/perfil/perfil.page').then( m => m.PerfilPage)
+  },
+  {
     path: 'agendar',
     loadComponent: () => import('./pages/paciente/agendar/agendar.page').then( m => m.AgendarPage)
   }
-
-
-
 ];
