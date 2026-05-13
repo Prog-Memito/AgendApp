@@ -31,6 +31,12 @@ export class InicioPage {
     });
   }
 
+  // Navegación a Agendar horas
+  irAAgendar() {
+    console.log('Navegando a Agendar...');
+    this.router.navigate(['/agendar']);
+  }
+
   // Navegación a Perfil
   irAPerfil() {
     this.router.navigate(['/perfil']);
@@ -39,12 +45,6 @@ export class InicioPage {
   // Navegación a Login
   logout() {
     this.router.navigate(['/login']);
-  }
-
-  // Funciones para los otros botones (puedes añadir las rutas cuando las crees)
-  irAAgendar() { 
-    console.log('Navegando a Agendar...');
-    // this.router.navigate(['/agendar']); 
   }
 
   irAMisHoras() { 
