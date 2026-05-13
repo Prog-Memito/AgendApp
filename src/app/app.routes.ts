@@ -30,5 +30,10 @@ export const routes: Routes = [
   {
     path: 'agendar',
     loadComponent: () => import('./pages/paciente/agendar/agendar.page').then( m => m.AgendarPage)
+  },
+  {
+    path: 'control-medico',
+    loadComponent: () => import('./pages/paciente/control-medico/control-medico.page').then( m => m.ControlMedicoPage)
   }
+
 ];
