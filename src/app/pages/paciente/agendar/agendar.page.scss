@@ -1,0 +1,76 @@
+.selection-title {
+  margin: 1rem 0;
+  h2 {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #1a1a1a;
+  }
+}
+
+.service-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 20px 10px;
+  text-align: center;
+  height: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:active { transform: scale(0.95); }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 12px 0 5px 0;
+    color: #111;
+  }
+
+  p {
+    font-size: 0.75rem;
+    color: #777;
+    line-height: 1.2;
+    margin: 0;
+  }
+}
+
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+// Colores de los círculos
+.blue-bg { background: #e0ebff; color: #2563eb; }
+.purple-bg { background: #f3ebff; color: #7c3aed; }
+.green-bg { background: #e6f9f0; color: #10b981; }
+
+.important-note {
+  margin-top: 2rem;
+  background: #fffdf0;
+  border-left: 4px solid #facc15;
+  padding: 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  ion-icon {
+    color: #a16207;
+    font-size: 20px;
+    margin-top: 2px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #854d0e;
+    line-height: 1.4;
+  }
+}

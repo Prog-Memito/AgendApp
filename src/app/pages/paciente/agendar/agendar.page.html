@@ -1,0 +1,60 @@
+<ion-header [translucent]="true" class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/paciente/inicio" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agendar Hora</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="selection-title">
+    <h2>Selecciona el tipo de atención</h2>
+  </div>
+
+  <!-- Contenedor de Tarjetas en Grid -->
+  <ion-grid>
+    <ion-row>
+      <!-- Control Médico -->
+      <ion-col size="4">
+        <div class="service-card" (click)="selectService('control')">
+          <div class="icon-circle blue-bg">
+            <ion-icon name="document-text-outline"></ion-icon>
+          </div>
+          <h3>Control Médico</h3>
+          <p>Medicina general y familiar</p>
+        </div>
+      </ion-col>
+
+      <!-- Psicólogo -->
+      <ion-col size="4">
+        <div class="service-card" (click)="selectService('psicologo')">
+          <div class="icon-circle purple-bg">
+            <ion-icon name="happy-outline"></ion-icon>
+          </div>
+          <h3>Psicólogo</h3>
+          <p>Atención psicológica</p>
+        </div>
+      </ion-col>
+
+      <!-- Odontología -->
+      <ion-col size="4">
+        <div class="service-card" (click)="selectService('odontologia')">
+          <div class="icon-circle green-bg">
+            <ion-icon name="thumbs-up-outline"></ion-icon>
+          </div>
+          <h3>Odontología</h3>
+          <p>Salud dental y bucal</p>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Nota Importante -->
+  <div class="important-note">
+    <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+    <p>
+      <strong>Nota importante:</strong> Para seguimiento de enfermedades crónicas, contactarse directamente con su médico especialista.
+    </p>
+  </div>
+</ion-content>
