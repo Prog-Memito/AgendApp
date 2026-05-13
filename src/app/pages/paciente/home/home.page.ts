@@ -31,11 +31,24 @@ export class InicioPage {
     });
   }
 
+  // Navegación a Perfil
+  irAPerfil() {
+    this.router.navigate(['/perfil']);
+  }
+
+  // Navegación a Login
   logout() {
     this.router.navigate(['/login']);
   }
 
-  irAAgendar() { console.log('Agendar'); }
-  irAMisHoras() { console.log('Mis Horas'); }
-  irAPerfil() { console.log('Perfil'); }
+  // Funciones para los otros botones (puedes añadir las rutas cuando las crees)
+  irAAgendar() { 
+    console.log('Navegando a Agendar...');
+    // this.router.navigate(['/agendar']); 
+  }
+
+  irAMisHoras() { 
+    console.log('Navegando a Mis Horas...');
+    // this.router.navigate(['/mis-horas']);
+  }
 }

@@ -1,0 +1,51 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar mode="md">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/paciente-home" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="profile-container">
+    <div class="avatar-container">
+      <div class="avatar-gradient">
+        <span>U</span>
+      </div>
+    </div>
+
+    <div class="user-info">
+      <h1>Usuario 12.345.678</h1>
+      <p class="run-text">RUN: 12.345.678-9</p>
+      <p class="email-text">123456789@paciente.cl</p>
+    </div>
+
+    <div class="establishment-badge">
+      <ion-icon name="business-outline"></ion-icon>
+      <span>Concepción, CESFAM Víctor Manuel Fernández</span>
+    </div>
+
+    <div class="info-cards">
+      <div class="custom-card">
+        <ion-icon name="id-card-outline" class="card-icon"></ion-icon>
+        <div class="card-text">
+          <h3>RUN no modificable</h3>
+          <p>Tu RUN es tu identificador único y no puede ser modificado. Úsalo para iniciar sesión.</p>
+        </div>
+      </div>
+
+      <div class="custom-card">
+        <ion-icon name="time-outline" class="card-icon"></ion-icon>
+        <div class="card-text">
+          <h3>Establecimiento Asignado</h3>
+          <p>Tu establecimiento de salud es asignado automáticamente según tu domicilio y no puede ser modificado desde aquí.</p>
+        </div>
+      </div>
+    </div>
+
+    <ion-button expand="block" class="btn-edit">
+      Editar Perfil
+    </ion-button>
+  </div>
+</ion-content>
