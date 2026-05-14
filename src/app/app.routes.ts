@@ -41,6 +41,10 @@ export const routes: Routes = [
   },  {
     path: 'psicologo',
     loadComponent: () => import('./pages/paciente/psicologo/psicologo.page').then( m => m.PsicologoPage)
+  },
+  {
+    path: 'odontologia',
+    loadComponent: () => import('./pages/paciente/odontologia/odontologia.page').then( m => m.OdontologiaPage)
   }
 
 
