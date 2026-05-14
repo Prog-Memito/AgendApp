@@ -38,6 +38,10 @@ export const routes: Routes = [
   {
     path: 'control-medico',
     loadComponent: () => import('./pages/paciente/control-medico/control-medico.page').then( m => m.ControlMedicoPage)
+  },  {
+    path: 'psicologo',
+    loadComponent: () => import('./pages/paciente/psicologo/psicologo.page').then( m => m.PsicologoPage)
   }
+
 
 ];
