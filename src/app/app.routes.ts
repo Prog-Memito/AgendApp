@@ -30,7 +30,8 @@ export const routes: Routes = [
   {
     path: 'agendar',
     loadComponent: () => import('./pages/paciente/agendar/agendar.page').then( m => m.AgendarPage)
-  },  {
+  },
+  {
     path: 'mis-horas',
     loadComponent: () => import('./pages/paciente/mis-horas/mis-horas.page').then( m => m.MisHorasPage)
   }
