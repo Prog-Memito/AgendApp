@@ -1,0 +1,32 @@
+.calendar-input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-top: 10px;
+  background: #fff;
+  cursor: pointer;
+
+  .placeholder {
+    color: #999;
+    font-size: 1rem;
+  }
+
+  .selected-value {
+    color: #333;
+    font-size: 1rem;
+  }
+
+  ion-icon {
+    font-size: 1.2rem;
+    color: #333;
+  }
+}
+
+// Estilo del modal para que no ocupe toda la pantalla (opcional)
+ion-modal {
+  --height: auto;
+  --border-radius: 16px;
+}
