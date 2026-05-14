@@ -34,6 +34,10 @@ export const routes: Routes = [
   {
     path: 'mis-horas',
     loadComponent: () => import('./pages/paciente/mis-horas/mis-horas.page').then( m => m.MisHorasPage)
+  },
+  {
+    path: 'control-medico',
+    loadComponent: () => import('./pages/paciente/control-medico/control-medico.page').then( m => m.ControlMedicoPage)
   }
 
 ];
