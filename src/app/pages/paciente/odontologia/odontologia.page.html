@@ -1,13 +1,70 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="ion-no-border">
   <ion-toolbar>
-    <ion-title>odontologia</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/agendar" text=""></ion-back-button>
+    </ion-buttons>
+    <ion-title>Agendar Hora</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">odontologia</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <div class="selection-header">
+    <h2>Control Médico</h2>
+    <ion-button fill="clear" size="small" (click)="cambiarTipo()">Cambiar</ion-button>
+  </div>
+
+  <ion-card class="date-selection-card">
+    <ion-card-content>
+      <ion-label position="stacked">Selecciona una fecha:</ion-label>
+      
+      <div class="calendar-input-container" id="open-modal">
+        <span *ngIf="!fechaSeleccionada" class="placeholder">dd/mm/aaaa</span>
+        <span *ngIf="fechaSeleccionada" class="selected-value">{{ dateValue | date: 'dd/MM/yyyy' }}</span>
+        <ion-icon name="calendar-outline"></ion-icon>
+      </div>
+
+      <!-- Añadimos el identificador #modalCalendario -->
+      <ion-modal #modalCalendario trigger="open-modal" [keepContentsMounted]="true">
+        <ng-template>
+          <ion-datetime 
+            id="datetime" 
+            presentation="date" 
+            [min]="minDate" 
+            locale="es-CL"
+            (ionChange)="onDateChange($event)">
+          </ion-datetime>
+        </ng-template>
+      </ion-modal>
+      
+      <p class="helper-text">Disponibilidad para los próximos 7 días</p>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Estado Inicial -->
+  <div *ngIf="!fechaSeleccionada" class="empty-state">
+    <div class="empty-icon-container">
+      <ion-icon name="calendar-outline"></ion-icon>
+    </div>
+    <p>Selecciona una fecha para ver la disponibilidad</p>
+  </div>
+
+  <!-- Listado de Disponibilidad -->
+  <div *ngIf="fechaSeleccionada" class="availability-list">
+    <!-- Aquí van tus tarjetas de doctores (Dra. María, Dr. Carlos) -->
+    <ion-card class="doctor-card">
+      <ion-card-header>
+        <ion-card-title>Dra. María González</ion-card-title>
+        <ion-card-subtitle>Medicina General</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="day-label">{{ fechaFormateada }}</div>
+        <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Tarde</div>
+        <div class="hours-grid">
+          <ion-button fill="clear" class="hour-btn">15:00</ion-button>
+          <ion-button fill="clear" class="hour-btn">16:00</ion-button>
+          <ion-button fill="clear" class="hour-btn">17:00</ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
