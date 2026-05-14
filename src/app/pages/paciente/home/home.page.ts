@@ -47,8 +47,9 @@ export class InicioPage {
     this.router.navigate(['/login']);
   }
 
+  // Navegación a Mis Horas
   irAMisHoras() { 
     console.log('Navegando a Mis Horas...');
-    // this.router.navigate(['/mis-horas']);
+    this.router.navigate(['/mis-horas']);
   }
 }
