@@ -62,5 +62,38 @@ try {
     }
 });
 
-app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
+//Crear el usuario en Oracle vinculado a Firebase
+//Este se ejecuta DESPUÉS de que el usuario se registra exitosamente en Firebase
+app.post('/api/crear-usuario', async (req, res) => {
+    const { email, run, firebaseUID } = req.body;
+    let connection;
 
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        // Insertamos en la tabla USUARIO vinculando el RUN del paciente y el UID de Firebase
+        await connection.execute(
+            `INSERT INTO USUARIO (USER_NAME, RUN_PACIENTE, FIREBASE_UID, ID_TP_USER) 
+             VALUES (:email, :run, :firebaseUID, 3)`,
+            {
+                email: email,
+                run: run,
+                firebaseUID: firebaseUID
+            },
+            { autoCommit: true } // Para que los cambios se guarden de inmediato
+        );
+
+        res.json({
+            success: true,
+            mensaje: "Usuario registrado y vinculado con éxito en el sistema médico."
+        });
+
+    } catch (err) {
+        console.error("Error al crear usuario en Oracle:", err);
+        res.status(500).json({ error: "No se pudo vincular el usuario en la base de datos local." });
+    } finally {
+        if (connection) await connection.close();
+    }
+});
+
+app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
