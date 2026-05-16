@@ -20,14 +20,12 @@
           <div class="input-box">
             <ion-input 
               type="text" 
-              inputmode="text"
               placeholder="12.345.678-9"
               [value]="rutValue"
               (ionInput)="onRutInput($event)"
               maxlength="12">
             </ion-input>
           </div>
-          <span class="input-helper">Formato: xx.xxx.xxx-x (el último dígito puede ser un número o K)</span>
         </div>
 
         <ion-button expand="block" class="main-green-button" (click)="siguientePaso()">
@@ -45,21 +43,19 @@
         <div class="info-box">
           <span class="info-label">RUN registrado:</span>
           <span class="info-value">{{ rutValue }}</span>
-          <p class="info-subtext">Usarás este RUN para iniciar sesión</p>
         </div>
 
         <div class="input-group">
-          <ion-label class="input-label">Email (opcional)</ion-label>
+          <ion-label class="input-label">Email</ion-label>
           <div class="input-box">
-            <ion-input type="email" placeholder="tu@email.com (opcional)"></ion-input>
+            <ion-input type="email" placeholder="tu@email.com" [(ngModel)]="emailValue"></ion-input>
           </div>
-          <span class="input-helper">Para notificaciones y recordatorios</span>
         </div>
 
         <div class="input-group">
           <ion-label class="input-label">Contraseña</ion-label>
           <div class="input-box password-field">
-            <ion-input [type]="passwordType" placeholder="********">
+            <ion-input [type]="passwordType" placeholder="********" [(ngModel)]="passValue">
               <ion-button fill="clear" slot="end" (click)="togglePassword()" class="eye-button">
                 <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
               </ion-button>
@@ -70,7 +66,7 @@
         <div class="input-group">
           <ion-label class="input-label">Confirmar Contraseña</ion-label>
           <div class="input-box password-field">
-            <ion-input [type]="passwordType" placeholder="********">
+            <ion-input [type]="passwordType" placeholder="********" [(ngModel)]="confirmPassValue">
               <ion-button fill="clear" slot="end" (click)="togglePassword()" class="eye-button">
                 <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
               </ion-button>
@@ -79,10 +75,8 @@
         </div>
 
         <div class="buttons-row">
-          <ion-button fill="clear" class="back-button" (click)="volverPaso()">
-            Atrás
-          </ion-button>
-          <ion-button class="main-green-button" style="flex: 2; margin-top: 0;">
+          <ion-button fill="clear" class="back-button" (click)="volverPaso()">Atrás</ion-button>
+          <ion-button class="main-green-button" style="flex: 2; margin-top: 0;" (click)="registrarUsuario()">
             Registrarse
           </ion-button>
         </div>

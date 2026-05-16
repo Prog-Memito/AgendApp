@@ -2,6 +2,18 @@ const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
 
+// --- PARCHE DE COMPATIBILIDAD ORACLE ---
+// Forzamos el uso del Instant Client instalado para evitar el error NJS-138
+try {
+    // Si tienes el Instant Client en tu PATH, los paréntesis vacíos bastan.
+    // Si no, puedes poner la ruta así: oracledb.initOracleClient({libDir: 'C:\\oracle\\instantclient_19_8'});
+    oracledb.initOracleClient();
+    console.log("Oracle Instant Client inicializado correctamente.");
+} catch (err) {
+    console.error("Error al inicializar el cliente de Oracle:", err);
+}
+// ---------------------------------------
+
 const app = express();
 // con esto puede ionic pueda conectarce
 app.use(cors());
@@ -22,15 +34,21 @@ app.get('/api/validar-paciente/:run', async (req, res) => {
     try {
         connection = await oracledb.getConnection(dbConfig);
         
-        const result = await connection.execute(
-            `SELECT NOMB_PAC, APELL_PAT_PAC, ESTADO_ID_ESTADO
+        const sql = `
+            SELECT NOMB_PAC, APELL_PAT_PAC, ESTADO_ID_ESTADO
             FROM PACIENTE
-            WHERE RUN_PAC = :run`,
+            WHERE REPLACE(REPLACE(RUN_PAC, '.', ''), '-', '') = :run
+        `;
+
+        const result = await connection.execute(
+            sql,
             [run],
             { outFormat: oracledb.OUT_FORMAT_OBJECT }
         );
 
         if (result.rows.length === 0) {
+            // Log para que veas en la terminal qué falló
+            console.log(`RUN no encontrado: ${run}`); 
             return res.status(404).json({ 
                 valido: false, 
                 mensaje: "El RUN no figura en los registros del CESFAM." 
@@ -52,7 +70,7 @@ app.get('/api/validar-paciente/:run', async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
+        console.error("Error en validación:", err);
         res.status(500).json({ error: "Error interno del servidor" });
     } finally {
         if (connection) await connection.close();
@@ -68,11 +86,11 @@ app.post('/api/vincular-paciente', async (req, res) => {
         connection = await oracledb.getConnection(dbConfig);
         
         const result = await connection.execute(
-            `UPDATE PACIENTE 
-             SET EMAIL = :email, 
-                 FIREBASE_UID = :firebaseUID,
-                 PASS = 'FIREBASE_MANAGED' 
-             WHERE RUN_PAC = :run`,
+            `UPDATE PACIENTE
+            SET EMAIL = :email,
+            FIREBASE_UID = :firebaseUID,
+            PASS = 'FIREBASE_MANAGED' 
+            WHERE REPLACE(REPLACE(RUN_PAC, '.', ''), '-', '') = :run`,
             {
                 email: email,
                 firebaseUID: firebaseUID,
@@ -99,8 +117,7 @@ app.post('/api/vincular-paciente', async (req, res) => {
 });
 
 /**
- * NUEVO: Verificar personal SOME para vinculación automática (Opción B)
- * Este verifica si el correo existe en PERS_SOME antes de intentar el login en Firebase.
+ * Endpoint: Verificar personal SOME para vinculación automática
  */
 app.post('/api/verificar-personal', async (req, res) => {
     const { email } = req.body;
@@ -139,8 +156,7 @@ app.post('/api/verificar-personal', async (req, res) => {
 });
 
 /**
- * NUEVO: Vincular UID de personal SOME
- * Registra el UID generado por Firebase en la tabla PERS_SOME.
+ * Endpoint: Vincular UID de personal SOME
  */
 app.post('/api/vincular-personal', async (req, res) => {
     const { run, firebaseUID } = req.body;
