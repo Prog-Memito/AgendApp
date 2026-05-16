@@ -13,6 +13,14 @@ ion-toolbar {
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
+  max-width: 600px; /* Centra el contenido en pantallas más grandes */
+  margin: 0 auto;
+}
+
+.avatar-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 .avatar-gradient {
@@ -54,6 +62,7 @@ ion-toolbar {
   font-weight: 600;
   font-size: 0.9rem;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .info-cards {
@@ -90,4 +99,133 @@ ion-toolbar {
   font-weight: 700;
   height: 50px;
   text-transform: none;
+}
+
+/* ==========================================================================
+  edicion de perfil :3
+   ========================================================================== */
+.edit-form-container {
+  width: 100%;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.password-fields-container {
+  width: 100%;
+  margin-top: 15px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.input-label {
+  display: block;
+  color: #011a33;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  
+  .required { 
+    color: #ef4444; 
+  }
+}
+
+.custom-input {
+  --background: #ffffff;
+  --border-radius: 12px;
+  --padding-start: 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  ion-input { 
+    color: #334155; 
+    --padding-top: 0;
+    --padding-bottom: 0;
+  }
+}
+
+/* Cabecera de la sección Cambiar Contraseña */
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  width: 100%;
+  
+  span { 
+    color: #011a33; 
+    font-weight: 600; 
+    font-size: 1rem; 
+  }
+  
+  .btn-change { 
+    --color: #1a6dff; 
+    font-weight: 700; 
+    font-size: 0.95rem; 
+    text-transform: none; 
+  }
+}
+
+.divider { 
+  border: 0; 
+  height: 1px; 
+  background: #e2e8f0; 
+  margin: 20px 0; 
+  width: 100%; 
+}
+
+.helper-text { 
+  font-size: 0.8rem; 
+  color: #718096; 
+  margin: 6px 0 0 4px; 
+  line-height: 1.4; 
+}
+
+/* Botón del ojo para mostrar/ocultar contraseñas */
+.btn-eye {
+  --padding-end: 12px;
+  --padding-start: 8px;
+  margin: 0;
+  height: 100%;
+  
+  ion-icon {
+    color: #64748b;
+    font-size: 1.3rem;
+  }
+}
+
+/* Botones Inferiores de Acción (Cancelar / Guardar) */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 30px;
+  width: 100%;
+
+  ion-button { 
+    height: 50px; 
+    font-weight: 700; 
+    --border-radius: 12px; 
+    margin: 0; 
+    text-transform: none;
+  }
+  
+  .btn-cancel { 
+    --background: #cbd5e1; 
+    --color: #334155; 
+    --box-shadow: none; 
+  }
+  
+  .btn-save { 
+    --background: #1a6dff; 
+    --color: #ffffff; 
+    --box-shadow: none; 
+  }
 }
