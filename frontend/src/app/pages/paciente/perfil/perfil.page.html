@@ -54,7 +54,7 @@
       <div class="input-group">
         <label class="input-label">Email</label>
         <ion-item lines="none" class="custom-input">
-          <ion-input type="email" value="521497885@paciente.cl"></ion-input>
+          <ion-input type="email" [(ngModel)]="emailUsuario"></ion-input>
         </ion-item>
       </div>
 
@@ -66,10 +66,11 @@
       </div>
 
       <div *ngIf="cambiandoPassword" class="password-fields-container">
+        
         <div class="input-group">
           <label class="input-label">Nueva Contraseña</label>
-          <ion-item lines="none" class="custom-input">
-            <ion-input [type]="verNuevaPassword ? 'text' : 'password'" placeholder="••••••••"></ion-input>
+          <ion-item lines="none" class="custom-input" [class.input-error]="nuevaClave !== confirmarClave && confirmarClave.length > 0">
+            <ion-input [type]="verNuevaPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="nuevaClave"></ion-input>
             <ion-button slot="end" fill="clear" class="btn-eye" (click)="verNuevaPassword = !verNuevaPassword">
               <ion-icon slot="icon-only" [name]="verNuevaPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
             </ion-button>
@@ -78,12 +79,15 @@
 
         <div class="input-group">
           <label class="input-label">Confirmar Nueva Contraseña</label>
-          <ion-item lines="none" class="custom-input">
-            <ion-input [type]="verConfirmarPassword ? 'text' : 'password'" placeholder="••••••••"></ion-input>
+          <ion-item lines="none" class="custom-input" [class.input-error]="nuevaClave !== confirmarClave && confirmarClave.length > 0">
+            <ion-input [type]="verConfirmarPassword ? 'text' : 'password'" placeholder="••••••••" [(ngModel)]="confirmarClave"></ion-input>
             <ion-button slot="end" fill="clear" class="btn-eye" (click)="verConfirmarPassword = !verConfirmarPassword">
               <ion-icon slot="icon-only" [name]="verConfirmarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
             </ion-button>
           </ion-item>
+          <p *ngIf="nuevaClave !== confirmarClave && confirmarClave.length > 0" class="error-text">
+            <ion-icon name="alert-circle-outline"></ion-icon> Las contraseñas no coinciden.
+          </p>
         </div>
       </div>
 
@@ -92,7 +96,7 @@
       <div class="input-group">
         <label class="input-label">Contraseña Actual <span class="required">*</span></label>
         <ion-item lines="none" class="custom-input">
-          <ion-input [type]="verActualPassword ? 'text' : 'password'" placeholder="Confirma con tu contraseña actual"></ion-input>
+          <ion-input [type]="verActualPassword ? 'text' : 'password'" placeholder="Confirma con tu contraseña actual" [(ngModel)]="actualClave"></ion-input>
           <ion-button slot="end" fill="clear" class="btn-eye" (click)="verActualPassword = !verActualPassword">
             <ion-icon slot="icon-only" [name]="verActualPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
           </ion-button>
@@ -102,7 +106,12 @@
 
       <div class="action-buttons">
         <ion-button fill="solid" class="btn-cancel" (click)="cancelarEdicion()">Cancelar</ion-button>
-        <ion-button fill="solid" class="btn-save" (click)="guardarCambios()">Guardar Cambios</ion-button>
+        
+        <ion-button fill="solid" class="btn-save" 
+                    [disabled]="actualClave.length === 0 || (cambiandoPassword && nuevaClave !== confirmarClave)"
+                    (click)="guardarCambios()">
+          Guardar Cambios
+        </ion-button>
       </div>
 
     </div>
