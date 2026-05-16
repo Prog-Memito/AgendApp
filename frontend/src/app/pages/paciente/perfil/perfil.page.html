@@ -9,6 +9,7 @@
 
 <ion-content class="ion-padding">
   <div class="profile-container">
+
     <div class="avatar-container">
       <div class="avatar-gradient">
         <span>U</span>
@@ -16,14 +17,14 @@
     </div>
 
     <div class="user-info">
-      <h1>Usuario 12.345.678</h1>
-      <p class="run-text">RUN: 12.345.678-9</p>
-      <p class="email-text">123456789@paciente.cl</p>
+      <h1>Usuario 52.149.788</h1>
+      <p class="run-text">RUN: 52.149.788-5</p>
+      <p class="email-text">521497885@paciente.cl</p>
     </div>
 
     <div class="establishment-badge">
       <ion-icon name="business-outline"></ion-icon>
-      <span>Concepción, CESFAM Víctor Manuel Fernández</span>
+      <span>Concepción, CESFAM Pedro de Valdivia</span>
     </div>
 
     <div class="info-cards">
@@ -39,13 +40,72 @@
         <ion-icon name="time-outline" class="card-icon"></ion-icon>
         <div class="card-text">
           <h3>Establecimiento Asignado</h3>
-          <p>Tu establecimiento de salud es asignado automáticamente según tu domicilio y no puede ser modificado desde aquí.</p>
+          <p>Tu establecimiento de salud es asignado automáticamente según tu domicilio y no puede ser modificado desde aquí. Para cambios, contacta al centro de salud.</p>
         </div>
       </div>
     </div>
 
-    <ion-button expand="block" class="btn-edit">
+    <ion-button *ngIf="!editando" expand="block" class="btn-edit" (click)="activarEdicion()">
       Editar Perfil
     </ion-button>
+
+    <div *ngIf="editando" class="edit-form-container">
+      
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <ion-item lines="none" class="custom-input">
+          <ion-input type="email" value="521497885@paciente.cl"></ion-input>
+        </ion-item>
+      </div>
+
+      <div class="password-header">
+        <span>Cambiar Contraseña</span>
+        <ion-button fill="clear" size="small" class="btn-change" (click)="togglePasswordForm()">
+          {{ cambiandoPassword ? 'Cancelar cambio' : 'Cambiar' }}
+        </ion-button>
+      </div>
+
+      <div *ngIf="cambiandoPassword" class="password-fields-container">
+        <div class="input-group">
+          <label class="input-label">Nueva Contraseña</label>
+          <ion-item lines="none" class="custom-input">
+            <ion-input [type]="verNuevaPassword ? 'text' : 'password'" placeholder="••••••••"></ion-input>
+            <ion-button slot="end" fill="clear" class="btn-eye" (click)="verNuevaPassword = !verNuevaPassword">
+              <ion-icon slot="icon-only" [name]="verNuevaPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Confirmar Nueva Contraseña</label>
+          <ion-item lines="none" class="custom-input">
+            <ion-input [type]="verConfirmarPassword ? 'text' : 'password'" placeholder="••••••••"></ion-input>
+            <ion-button slot="end" fill="clear" class="btn-eye" (click)="verConfirmarPassword = !verConfirmarPassword">
+              <ion-icon slot="icon-only" [name]="verConfirmarPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="input-group">
+        <label class="input-label">Contraseña Actual <span class="required">*</span></label>
+        <ion-item lines="none" class="custom-input">
+          <ion-input [type]="verActualPassword ? 'text' : 'password'" placeholder="Confirma con tu contraseña actual"></ion-input>
+          <ion-button slot="end" fill="clear" class="btn-eye" (click)="verActualPassword = !verActualPassword">
+            <ion-icon slot="icon-only" [name]="verActualPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <p class="helper-text">Por seguridad, necesitamos confirmar tu contraseña actual para guardar los cambios</p>
+      </div>
+
+      <div class="action-buttons">
+        <ion-button fill="solid" class="btn-cancel" (click)="cancelarEdicion()">Cancelar</ion-button>
+        <ion-button fill="solid" class="btn-save" (click)="guardarCambios()">Guardar Cambios</ion-button>
+      </div>
+
+    </div>
+
   </div>
 </ion-content>
