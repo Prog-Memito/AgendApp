@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { CommonModule, formatDate } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, IonModal } from '@ionic/angular';
+import { IonicModule, IonModal, NavController } from '@ionic/angular'; // Inyectamos NavController aquí
 import { addIcons } from 'ionicons';
 import { calendarOutline, moonOutline, informationCircleOutline } from 'ionicons/icons';
 
@@ -21,7 +21,8 @@ export class ControlMedicoPage {
   fechaFormateada: string = '';
   dateValue: string = ''; 
 
-  constructor() {
+  // Inyectamos el NavController en el constructor para poder usar la navegación de Ionic
+  constructor(private navCtrl: NavController) {
     addIcons({ calendarOutline, moonOutline, informationCircleOutline });
   }
 
@@ -40,6 +41,8 @@ export class ControlMedicoPage {
   }
 
   cambiarTipo() {
-    console.log('Cambiando tipo...');
+    console.log('Regresando a la pantalla de selección de atención...');
+    
+    this.navCtrl.navigateBack('/agendar'); 
   }
 }

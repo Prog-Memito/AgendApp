@@ -1,3 +1,4 @@
+/* 1. ESTILOS BASE Y GENERALES  */
 ion-content {
   --background: #f8faff;
 }
@@ -13,10 +14,11 @@ ion-toolbar {
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  max-width: 600px; /* Centra el contenido en pantallas más grandes */
+  max-width: 600px;
   margin: 0 auto;
 }
 
+/* Vista del perfil */
 .avatar-container {
   display: flex;
   justify-content: center;
@@ -101,9 +103,7 @@ ion-toolbar {
   text-transform: none;
 }
 
-/* ==========================================================================
-  edicion de perfil :3
-   ========================================================================== */
+/* Desplegable del perfil para modificar correo y contraseña */
 .edit-form-container {
   width: 100%;
   margin-top: 20px;
@@ -127,10 +127,7 @@ ion-toolbar {
   font-weight: 600;
   font-size: 0.95rem;
   margin-bottom: 8px;
-  
-  .required { 
-    color: #ef4444; 
-  }
+  .required { color: #ef4444; }
 }
 
 .custom-input {
@@ -143,6 +140,7 @@ ion-toolbar {
   width: 100%;
   display: flex;
   align-items: center;
+  transition: border-color 0.2s ease;
 
   ion-input { 
     color: #334155; 
@@ -151,7 +149,21 @@ ion-toolbar {
   }
 }
 
-/* Cabecera de la sección Cambiar Contraseña */
+/* Mensaje se si las contraseñas estan bien o no */
+.input-error {
+  border-color: #ef4444 !important;
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin: 6px 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .password-header {
   display: flex;
   justify-content: space-between;
@@ -159,49 +171,21 @@ ion-toolbar {
   margin-top: 25px;
   width: 100%;
   
-  span { 
-    color: #011a33; 
-    font-weight: 600; 
-    font-size: 1rem; 
-  }
-  
-  .btn-change { 
-    --color: #1a6dff; 
-    font-weight: 700; 
-    font-size: 0.95rem; 
-    text-transform: none; 
-  }
+  span { color: #011a33; font-weight: 600; font-size: 1rem; }
+  .btn-change { --color: #1a6dff; font-weight: 700; font-size: 0.95rem; text-transform: none; }
 }
 
-.divider { 
-  border: 0; 
-  height: 1px; 
-  background: #e2e8f0; 
-  margin: 20px 0; 
-  width: 100%; 
-}
+.divider { border: 0; height: 1px; background: #e2e8f0; margin: 20px 0; width: 100%; }
+.helper-text { font-size: 0.8rem; color: #718096; margin: 6px 0 0 4px; line-height: 1.4; }
 
-.helper-text { 
-  font-size: 0.8rem; 
-  color: #718096; 
-  margin: 6px 0 0 4px; 
-  line-height: 1.4; 
-}
-
-/* Botón del ojo para mostrar/ocultar contraseñas */
 .btn-eye {
   --padding-end: 12px;
   --padding-start: 8px;
   margin: 0;
   height: 100%;
-  
-  ion-icon {
-    color: #64748b;
-    font-size: 1.3rem;
-  }
+  ion-icon { color: #64748b; font-size: 1.3rem; }
 }
 
-/* Botones Inferiores de Acción (Cancelar / Guardar) */
 .action-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -216,16 +200,16 @@ ion-toolbar {
     margin: 0; 
     text-transform: none;
   }
-  
-  .btn-cancel { 
-    --background: #cbd5e1; 
-    --color: #334155; 
-    --box-shadow: none; 
-  }
-  
+  .btn-cancel { --background: #cbd5e1; --color: #334155; --box-shadow: none; }
   .btn-save { 
     --background: #1a6dff; 
     --color: #ffffff; 
     --box-shadow: none; 
+
+    &[disabled] {
+      --background: #93c5fd;
+      color: #ffffff;
+      opacity: 0.7;
+    }
   }
 }

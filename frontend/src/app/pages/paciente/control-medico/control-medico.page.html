@@ -23,7 +23,6 @@
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
 
-      <!-- Añadimos el identificador #modalCalendario -->
       <ion-modal #modalCalendario trigger="open-modal" [keepContentsMounted]="true">
         <ng-template>
           <ion-datetime 
@@ -40,7 +39,6 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Estado Inicial -->
   <div *ngIf="!fechaSeleccionada" class="empty-state">
     <div class="empty-icon-container">
       <ion-icon name="calendar-outline"></ion-icon>
@@ -48,9 +46,7 @@
     <p>Selecciona una fecha para ver la disponibilidad</p>
   </div>
 
-  <!-- Listado de Disponibilidad -->
   <div *ngIf="fechaSeleccionada" class="availability-list">
-    <!-- Aquí van tus tarjetas de doctores (Dra. María, Dr. Carlos) -->
     <ion-card class="doctor-card">
       <ion-card-header>
         <ion-card-title>Dra. María González</ion-card-title>

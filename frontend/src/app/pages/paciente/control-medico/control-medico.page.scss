@@ -1,32 +1,116 @@
+ion-content {
+  // Asegura el tono azulino muy sutil de fondo de la app
+  --background: #f8faff; 
+  color: #011a33;
+}
+
+ion-toolbar {
+  --background: #ffffff;
+  --color: #011a33;
+  font-weight: 700;
+}
+
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #011a33;
+    margin: 0;
+  }
+
+  ion-button {
+    --color: #1a6dff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: none;
+  }
+}
+
+/* Seleccion de fecha */
+.date-selection-card {
+  background: #ffffff !important; // Fuerza el contenedor a mantenerse blanco
+  border-radius: 16px;
+  margin: 0 0 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  
+  ion-card-content {
+    padding: 20px;
+  }
+}
+
+ion-label {
+  color: #2d3748 !important;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Contenedor que simula el campo input del calendario */
 .calendar-input-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 1px solid #cbd5e1; // Gris suave del diseño claro
+  border-radius: 12px;
   padding: 12px 15px;
   margin-top: 10px;
-  background: #fff;
+  background: #ffffff !important; // Evita que se torne oscuro
   cursor: pointer;
 
   .placeholder {
-    color: #999;
+    color: #94a3b8;
     font-size: 1rem;
   }
 
   .selected-value {
-    color: #333;
+    color: #011a33;
     font-size: 1rem;
+    font-weight: 600;
   }
 
   ion-icon {
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 1.3rem;
+    color: #a0aec0;
   }
 }
 
-// Estilo del modal para que no ocupe toda la pantalla (opcional)
+.helper-text {
+  font-size: 0.82rem;
+  color: #718096;
+  margin: 10px 0 0 2px;
+}
+
 ion-modal {
   --height: auto;
   --border-radius: 16px;
+}
+
+.empty-state {
+  background: #f0f6ff !important; // Fondo azul celeste plano de la captura
+  border: 1px solid #d8e7ff;
+  border-radius: 16px;
+  padding: 35px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+  text-align: center;
+
+  ion-icon {
+    color: #1a6dff;
+    font-size: 2.8rem; // Ajuste para el tamaño del icono principal
+  }
+
+  p {
+    color: #2d3748;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+  }
 }
