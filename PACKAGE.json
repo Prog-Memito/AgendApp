@@ -1,0 +1,11 @@
+{
+"name": "agendapp-proyecto",
+"version": "1.0.0",
+"description": "Script de instalación automatizada para AgendApp",
+"scripts": {
+"instalar": "npm install --prefix backend && npm install --prefix frontend",
+"limpiar": "rm -rf backend/node_modules frontend/node_modules",
+"backend": "cd backend && node index.js",
+"frontend": "cd frontend && ionic serve"
+}
+}
