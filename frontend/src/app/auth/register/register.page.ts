@@ -18,7 +18,8 @@ import {
   IonIcon 
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { personAddOutline, eyeOutline, eyeOffOutline } from 'ionicons/icons';
+// Añadimos alertCircleOutline para el mensaje de error rojo de las contraseñas
+import { personAddOutline, eyeOutline, eyeOffOutline, alertCircleOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-register',
@@ -51,13 +52,18 @@ export class RegisterPage implements OnInit {
   // Variable que almacena el RUT formateado
   rutValue: string = '';
 
+  // Variables añadidas para capturar los datos del Paso 2 mediante ngModel
+  emailValue: string = '';
+  passwordValue: string = '';
+  confirmPasswordValue: string = '';
+
   // Variables para la visibilidad de la contraseña
   showPassword = false;
   passwordType = 'password';
 
   constructor(private router: Router) {
-    // Agregamos los iconos de la persona y los del ojo para la contraseña
-    addIcons({ personAddOutline, eyeOutline, eyeOffOutline });
+    // Agregamos los iconos requeridos, incluyendo el de advertencia
+    addIcons({ personAddOutline, eyeOutline, eyeOffOutline, alertCircleOutline });
   }
 
   ngOnInit() {}
@@ -126,11 +132,20 @@ export class RegisterPage implements OnInit {
   }
 
   /**
-   * Finaliza el registro
+   * Finaliza el registro guardando todos los datos capturados
    */
   registrarUsuario() {
-    console.log('Registrando con RUT:', this.rutValue);
-    this.router.navigate(['/login']);
+    // Validación de seguridad extra antes de procesar
+    if (this.passwordValue === this.confirmPasswordValue && this.passwordValue.length > 0) {
+      console.log('Registrando con éxito:', {
+        rut: this.rutValue,
+        email: this.emailValue,
+        password: this.passwordValue
+      });
+      this.router.navigate(['/login']);
+    } else {
+      console.log('Las contraseñas no coinciden o están vacías.');
+    }
   }
 
   irAlLogin() {
