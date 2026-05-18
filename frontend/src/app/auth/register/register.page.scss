@@ -135,7 +135,30 @@
     }
   }
 
-  // AJUSTE PARA EL BOTÓN DEL OJO
+
+  .input-box.input-error {
+    border-color: #ef4444 !important;
+    
+    &:focus-within {
+      border-color: #ef4444 !important; // Evita que se cambie a verde si clickea adentro
+    }
+  }
+
+  
+  .error-text {
+    color: #ef4444;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin: 8px 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    ion-icon {
+      font-size: 1rem;
+    }
+  }
+
   .password-field {
     display: flex;
     align-items: center;
@@ -197,6 +220,11 @@
   font-size: 1.1rem;
   text-transform: none;
   --box-shadow: none;
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 }
 
 .outline-green-button {
