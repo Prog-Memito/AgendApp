@@ -13,17 +13,15 @@
 
       <ion-card-content>
         <div class="input-group">
-          <ion-label class="input-label">RUN (Rol Único Nacional)</ion-label>
+          <ion-label class="input-label">Correo Electrónico</ion-label>
           <div class="input-box">
             <ion-input 
-              type="text" 
-              placeholder="12.345.678-9"
-              [value]="rutValue"
-              (ionInput)="onRutInput($event)"
-              maxlength="12">
+              type="email" 
+              placeholder="ejemplo@correo.cl"
+              [(ngModel)]="emailValue">
             </ion-input>
           </div>
-          <span class="input-helper">Formato: xx.xxx.xxx-x</span>
+          <span class="input-helper">Ingresa el correo usado en tu registro</span>
         </div>
 
         <div class="input-group">
@@ -31,7 +29,8 @@
           <div class="input-box pass-box">
             <ion-input 
               [type]="passwordType" 
-              placeholder="********">
+              placeholder="********"
+              [(ngModel)]="passwordValue">
             </ion-input>
             <ion-button fill="clear" (click)="togglePassword()" class="eye-btn">
               <ion-icon slot="icon-only" [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>

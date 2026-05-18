@@ -21,7 +21,11 @@ import { eyeOutline, eyeOffOutline } from 'ionicons/icons';
 })
 export class LoginPage {
 
-  rutValue: string = '';
+  // Variables para el formulario
+  emailValue: string = '';
+  passwordValue: string = '';
+  
+  // Variables para la visualización de contraseña
   passwordType: string = 'password';
   showPassword: boolean = false;
 
@@ -29,39 +33,19 @@ export class LoginPage {
     addIcons({ eyeOutline, eyeOffOutline });
   }
 
-  onRutInput(event: any) {
-    let valorRaw = event.target.value.toUpperCase().replace(/[^0-9K]/g, '');
-
-    if (valorRaw.includes('K')) {
-      const posicionK = valorRaw.indexOf('K');
-      if (posicionK !== valorRaw.length - 1) {
-        valorRaw = valorRaw.replace(/K/g, '');
-      }
-    }
-
-    if (valorRaw.length > 9) valorRaw = valorRaw.slice(0, 9);
-
-    if (valorRaw.length < 2) {
-      this.rutValue = valorRaw;
-    } else {
-      let cuerpo = valorRaw.slice(0, -1);
-      let dv = valorRaw.slice(-1);
-      cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-      this.rutValue = `${cuerpo}-${dv}`;
-    }
-    event.target.value = this.rutValue;
-  }
-
+  // Alternar visualización de contraseña
   togglePassword() {
     this.showPassword = !this.showPassword;
     this.passwordType = this.showPassword ? 'text' : 'password';
   }
 
   iniciarSesion() {
-      console.log('Iniciando sesión con:', this.rutValue);
-      // Cambiamos '/home' por la ruta del home de paciente
-      this.router.navigate(['/paciente-home']); 
-    }
+    // Por ahora solo mostramos en consola para verificar que captura los datos
+    console.log('Intentando iniciar sesión con Email:', this.emailValue);
+    
+    // Aquí irá la lógica de Firebase más adelante
+    this.router.navigate(['/paciente-home']); 
+  }
 
   irAlRegistro() {
     this.router.navigate(['/register']);
