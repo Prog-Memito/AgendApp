@@ -12,14 +12,14 @@
 
     <div class="avatar-container">
       <div class="avatar-gradient">
-        <span>U</span>
+        <span>{{ nombrePaciente.charAt(0) }}</span>
       </div>
     </div>
 
     <div class="user-info">
-      <h1>Usuario 52.149.788</h1>
-      <p class="run-text">RUN: 52.149.788-5</p>
-      <p class="email-text">521497885@paciente.cl</p>
+      <h1><strong>{{ nombrePaciente }}</strong></h1>
+      <p class="run-text">RUN: {{ runPaciente }}</p>
+      <p class="email-text">{{ emailPacienteEstatico }}</p>
     </div>
 
     <div class="establishment-badge">
@@ -40,7 +40,7 @@
         <ion-icon name="time-outline" class="card-icon"></ion-icon>
         <div class="card-text">
           <h3>Establecimiento Asignado</h3>
-          <p>Tu establecimiento de salud es asignado automáticamente según tu domicilio y no puede ser modificado desde aquí. Para cambios, contacta al centro de salud.</p>
+          <p>Tu establecimiento de salud es asignado automáticamente según tu domicilio y no puede ser modificado desde aquí.</p>
         </div>
       </div>
     </div>
@@ -108,7 +108,7 @@
         <ion-button fill="solid" class="btn-cancel" (click)="cancelarEdicion()">Cancelar</ion-button>
         
         <ion-button fill="solid" class="btn-save" 
-                    [disabled]="actualClave.length === 0 || (cambiandoPassword && nuevaClave !== confirmarClave)"
+                    [disabled]="actualClave.length === 0 || (cambiandoPassword && (nuevaClave !== confirmarClave || nuevaClave.length < 6))"
                     (click)="guardarCambios()">
           Guardar Cambios
         </ion-button>
