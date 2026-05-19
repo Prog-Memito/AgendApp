@@ -14,7 +14,6 @@ import { AppComponent } from './app/app.component';
 //Traemos el objeto environment
 import { environment } from './environments/environment';
 
-
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

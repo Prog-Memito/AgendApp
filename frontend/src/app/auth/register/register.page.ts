@@ -1,151 +1,149 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core'; // Añadimos inject
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
-  IonToolbar, 
-  IonCard, 
-  IonCardHeader, 
-  IonCardTitle, 
-  IonCardContent, 
-  IonLabel, 
-  IonItem, 
-  IonInput, 
-  IonButton, 
-  IonIcon 
+  IonContent, IonHeader, IonTitle, IonToolbar, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonLabel, IonItem, 
+  IonInput, IonButton, IonIcon, ToastController, LoadingController // Añadimos controladores de UI
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-// Añadimos alertCircleOutline para el mensaje de error rojo de las contraseñas
 import { personAddOutline, eyeOutline, eyeOffOutline, alertCircleOutline } from 'ionicons/icons';
+
+// IMPORTANTE: Importamos las herramientas de Firebase y HTTP
+import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment'; // Importamos tu nueva config
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
-    CommonModule, 
-    FormsModule,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
-    IonLabel,
-    IonItem,
-    IonInput,
-    IonButton,
-    IonIcon
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonCard, IonCardHeader,
+    IonCardTitle, IonCardContent, IonLabel, IonItem, IonInput, IonButton, IonIcon
   ]
 })
 export class RegisterPage implements OnInit {
   
-  // Control de flujo (Paso 1: RUT | Paso 2: Email y Pass)
-  paso: number = 1;
-  
-  // Variable que almacena el RUT formateado
-  rutValue: string = '';
+  // Inyección de servicios necesarios
+  private auth: Auth = inject(Auth); 
+  private http: HttpClient = inject(HttpClient);
+  private router: Router = inject(Router);
+  private toastCtrl: ToastController = inject(ToastController);
+  private loadingCtrl: LoadingController = inject(LoadingController);
 
-  // Variables añadidas para capturar los datos del Paso 2 mediante ngModel
+  paso: number = 1;
+  rutValue: string = '';
   emailValue: string = '';
   passwordValue: string = '';
   confirmPasswordValue: string = '';
-
-  // Variables para la visibilidad de la contraseña
   showPassword = false;
   passwordType = 'password';
 
-  constructor(private router: Router) {
-    // Agregamos los iconos requeridos, incluyendo el de advertencia
+  constructor() {
     addIcons({ personAddOutline, eyeOutline, eyeOffOutline, alertCircleOutline });
   }
 
   ngOnInit() {}
 
-  /**
-   * Alterna la visibilidad de la contraseña entre texto y puntos
-   */
   togglePassword() {
     this.showPassword = !this.showPassword;
     this.passwordType = this.showPassword ? 'text' : 'password';
   }
 
-  /**
-   * Formatea el RUT en tiempo real: xx.xxx.xxx-x
-   * Bloquea cualquier letra que no sea K y valida su posición.
-   */
   onRutInput(event: any) {
-    // 1. Limpieza inicial: Solo números y K
     let valorRaw = event.target.value.toUpperCase().replace(/[^0-9K]/g, '');
-
-    // 2. Validación de la 'K' (solo permitida al final)
     if (valorRaw.includes('K')) {
       const posicionK = valorRaw.indexOf('K');
       if (posicionK !== valorRaw.length - 1) {
         valorRaw = valorRaw.replace(/K/g, '');
       }
     }
+    if (valorRaw.length > 9) valorRaw = valorRaw.slice(0, 9);
 
-    // 3. Limite de caracteres (máximo 9: 8 números + 1 DV)
-    if (valorRaw.length > 9) {
-      valorRaw = valorRaw.slice(0, 9);
-    }
-
-    // 4. Lógica de formateo visual
     if (valorRaw.length < 2) {
       this.rutValue = valorRaw;
     } else {
       let cuerpo = valorRaw.slice(0, -1);
       let dv = valorRaw.slice(-1);
-      // Puntos de miles
       cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
       this.rutValue = `${cuerpo}-${dv}`;
     }
-
-    // 5. Sincronización forzada con el elemento HTML para evitar parpadeo de letras prohibidas
     event.target.value = this.rutValue;
   }
 
-  /**
-   * Cambia a la pantalla de Email y Contraseña
-   */
   siguientePaso() {
-    // Validación mínima para avanzar (RUT chileno tiene entre 11 y 12 caracteres con puntos/guion)
     if (this.rutValue.length >= 11) {
       this.paso = 2;
     } else {
-      console.log('RUT incompleto');
+      this.mostrarToast('RUT incompleto o inválido', 'warning');
     }
   }
 
-  /**
-   * Regresa a la pantalla del RUT
-   */
   volverPaso() {
     this.paso = 1;
   }
 
   /**
-   * Finaliza el registro guardando todos los datos capturados
+   * Finaliza el registro guardando datos en Firebase y Oracle
    */
-  registrarUsuario() {
-    // Validación de seguridad extra antes de procesar
-    if (this.passwordValue === this.confirmPasswordValue && this.passwordValue.length > 0) {
-      console.log('Registrando con éxito:', {
-        rut: this.rutValue,
-        email: this.emailValue,
-        password: this.passwordValue
-      });
-      this.router.navigate(['/login']);
-    } else {
-      console.log('Las contraseñas no coinciden o están vacías.');
+  async registrarUsuario() {
+    // Validamos contraseñas
+    if (this.passwordValue !== this.confirmPasswordValue) {
+      this.mostrarToast('Las contraseñas no coinciden', 'danger');
+      return;
     }
+
+    const loading = await this.loadingCtrl.create({ message: 'Creando cuenta...' });
+    await loading.present();
+
+    try {
+      // 1. CREAR USUARIO EN FIREBASE
+      // Esta línea es la que guarda el email y clave en la nube de Google
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth, 
+        this.emailValue, 
+        this.passwordValue
+      );
+      
+      const uid = userCredential.user.uid; // Obtenemos el ID único generado por Firebase
+
+      // 2. VINCULAR CON ORACLE (Node.js)
+      // Esta línea envía el UID y el RUT a tu servidor para que Oracle sepa quién es quién
+      const datosVinculacion = {
+        email: this.emailValue,
+        run: this.rutValue,
+        firebaseUID: uid
+      };
+
+      this.http.post('http://localhost:3000/api/vincular-paciente', datosVinculacion)
+        .subscribe({
+          next: async (res: any) => {
+            await loading.dismiss();
+            this.mostrarToast('Registro completado con éxito', 'success');
+            this.router.navigate(['/login']);
+          },
+          error: async (err) => {
+            await loading.dismiss();
+            console.error('Error Oracle:', err);
+            this.mostrarToast('Usuario creado en Firebase, pero falló la vinculación local', 'warning');
+          }
+        });
+
+    } catch (error: any) {
+      await loading.dismiss();
+      console.error('Error Firebase:', error);
+      this.mostrarToast('Error al crear cuenta: ' + error.message, 'danger');
+    }
+  }
+
+  async mostrarToast(mensaje: string, color: string) {
+    const toast = await this.toastCtrl.create({
+      message: mensaje,
+      duration: 2500,
+      color: color
+    });
+    toast.present();
   }
 
   irAlLogin() {
