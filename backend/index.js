@@ -111,4 +111,32 @@ app.get('/api/obtener-rol/:uid', async (req, res) => {
     }
 });
 
+// Endpoint para obtener el nombre completo del paciente logueado
+app.get('/api/datos-paciente/:uid', async (req, res) => {
+    const { uid } = req.params;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        // Consultamos el nombre y apellido del paciente correspondiente al UID
+        const sql = `SELECT NOMB_PAC, APELL_PAT_PAC FROM PACIENTE WHERE FIREBASE_UID = :u`;
+        const result = await connection.execute(sql, [uid.trim()], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length > 0) {
+            const paciente = result.rows[0];
+            const nombreCompleto = `${paciente.NOMB_PAC} ${paciente.APELL_PAT_PAC}`;
+            
+            res.json({ success: true, nombre: nombreCompleto });
+        } else {
+            res.status(404).json({ success: false, error: "Paciente no encontrado" });
+        }
+    } catch (err) {
+        console.error("Error al obtener datos del paciente:", err.message);
+        res.status(500).json({ success: false, error: "Error de base de datos" });
+    } finally {
+        if (connection) await connection.close();
+    }
+});
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
