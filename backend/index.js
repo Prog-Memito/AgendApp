@@ -139,4 +139,62 @@ app.get('/api/datos-paciente/:uid', async (req, res) => {
     }
 });
 
+//Obtener el perfil completo del paciente (Nombre y RUN) para la pantalla de Perfil
+app.get('/api/perfil-completo-paciente/:uid', async (req, res) => {
+    const { uid } = req.params;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        const sql = `SELECT NOMB_PAC, APELL_PAT_PAC, RUN_PAC FROM PACIENTE WHERE FIREBASE_UID = :u`;
+        const result = await connection.execute(sql, [uid.trim()], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+
+        if (result.rows.length > 0) {
+            const pac = result.rows[0];
+            res.json({ 
+                success: true, 
+                nombre: `${pac.NOMB_PAC} ${pac.APELL_PAT_PAC}`,
+                run: pac.RUN_PAC
+            });
+        } else {
+            res.status(404).json({ success: false, error: "Paciente no encontrado" });
+        }
+    } catch (err) {
+        console.error("Error en perfil-completo:", err.message);
+        res.status(500).json({ success: false, error: "Error de base de datos" });
+    } finally {
+        if (connection) await connection.close();
+    }
+});
+
+//Actualizar el correo electrónico modificado en la tabla de Oracle
+app.put('/api/actualizar-perfil-paciente', async (req, res) => {
+    const { uid, nuevoEmail } = req.body;
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        const sql = `UPDATE PACIENTE SET EMAIL = :email WHERE FIREBASE_UID = :u`;
+        const result = await connection.execute(
+            sql, 
+            { email: nuevoEmail, u: uid.trim() }, 
+            { autoCommit: true }
+        );
+
+        if (result.rowsAffected > 0) {
+            console.log(`✏️ Email actualizado en Oracle para el UID: ${uid}`);
+            res.json({ success: true, mensaje: "Base de datos sincronizada." });
+        } else {
+            res.status(404).json({ success: false, error: "No se encontró el registro para actualizar." });
+        }
+    } catch (err) {
+        console.error("Error al actualizar perfil en Oracle:", err.message);
+        res.status(500).json({ success: false, error: "Error interno de base de datos" });
+    } finally {
+        if (connection) await connection.close();
+    }
+});
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
