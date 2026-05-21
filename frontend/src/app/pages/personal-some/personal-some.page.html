@@ -20,51 +20,51 @@
         <h1>Estadísticas de Agendamiento</h1>
         <p>Visualiza el comportamiento de las citas médicas en el sistema</p>
       </div>
-      <ion-button class="btn-manage">
+      <ion-button class="btn-manage" (click)="irAGestionarDisponibilidad()">
         <ion-icon slot="start" name="calendar-outline"></ion-icon>
         Gestionar Disponibilidad
       </ion-button>
     </div>
 
     <div class="stats-grid">
-      <ion-card class="stat-card">
+      <ion-card class="stat-card blue-card">
         <div class="stat-inner">
           <div class="stat-data">
             <span class="label">Total de Citas</span>
-            <span class="value">0</span>
+            <span class="value">{{ totalCitas }}</span>
           </div>
           <div class="stat-icon icon-blue"><ion-icon name="calendar-clear-outline"></ion-icon></div>
         </div>
       </ion-card>
 
-      <ion-card class="stat-card">
+      <ion-card class="stat-card purple-card">
         <div class="stat-inner">
           <div class="stat-data">
             <span class="label">Tipo Más Agendado</span>
-            <span class="value">N/A</span>
-            <span class="sub-value">0 citas</span>
+            <span class="value">{{ tipoMasAgendado }}</span>
+            <span class="sub-value">{{ citasTipo }} citas</span>
           </div>
           <div class="stat-icon icon-purple"><ion-icon name="trending-up-outline"></ion-icon></div>
         </div>
       </ion-card>
 
-      <ion-card class="stat-card">
+      <ion-card class="stat-card green-card">
         <div class="stat-inner">
           <div class="stat-data">
             <span class="label">Día Más Agendado</span>
-            <span class="value">N/A</span>
-            <span class="sub-value">0 citas</span>
+            <span class="value">{{ diaMasAgendado }}</span>
+            <span class="sub-value">{{ citasDia }} citas</span>
           </div>
           <div class="stat-icon icon-green"><ion-icon name="time-outline"></ion-icon></div>
         </div>
       </ion-card>
 
-      <ion-card class="stat-card">
+      <ion-card class="stat-card orange-card">
         <div class="stat-inner">
           <div class="stat-data">
             <span class="label">Box Más Usado</span>
-            <span class="value">N/A</span>
-            <span class="sub-value">0 citas</span>
+            <span class="value">{{ boxMasUsado }}</span>
+            <span class="sub-value">{{ citasBox }} citas</span>
           </div>
           <div class="stat-icon icon-orange"><ion-icon name="business-outline"></ion-icon></div>
         </div>
