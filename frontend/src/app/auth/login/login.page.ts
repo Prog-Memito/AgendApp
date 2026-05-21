@@ -46,72 +46,70 @@ export class LoginPage {
   }
 
   async iniciarSesion() {
-    if (!this.emailValue || !this.passwordValue) {
-      this.mostrarToast('Por favor, completa todos los campos', 'warning');
-      return;
-    }
-
-    const loading = await this.loadingCtrl.create({
-      message: 'Autenticando...',
-      spinner: 'crescent'
-    });
-    await loading.present();
-
-    try {
-      // 1. Autenticación en Firebase Auth
-      const userCredential = await signInWithEmailAndPassword(
-        this.auth,
-        this.emailValue.trim(),
-        this.passwordValue
-      );
-      const uid = userCredential.user.uid;
-      const emailLogueado = userCredential.user.email?.toLowerCase() || '';
-
-      // --- BYPASS DE EMERGENCIA PARA DESARROLLO ---
-      // Si el correo termina en @cesfam.cl, entra directo a SOME sin pasar por Oracle
-      if (emailLogueado.endsWith('@cesfam.cl')) {
-        loading.dismiss();
-        console.log('Bypass activado: Correo institucional detectado. Redirigiendo a SOME...');
-        this.router.navigate(['/personal-some']);
-        return; // Detiene la ejecución aquí
-      }
-
-      // 2. Consulta del Rol en el servidor Oracle si no es correo institucional
-      this.http.get<any[]>(`http://localhost:3000/api/obtener-rol/${uid}`)
-        .subscribe({
-          next: (res) => {
-            loading.dismiss();
-            
-            // Verificamos que el arreglo contenga datos devueltos por la query de Node
-            if (res && res.length > 0) {
-              // Extraemos el ID numérico de la primera fila del arreglo
-              const idTipoUsuario = res[0].USUARIO_ID_TP_USER;
-              
-              // Mapeamos según los roles numéricos de la base de datos
-              if (idTipoUsuario === 1) {
-                this.router.navigate(['/personal-some']); // Rol 1 -> SOME
-              } else if (idTipoUsuario === 2) {
-                this.router.navigate(['/medico-home']); // Rol 2 -> MÉDICO
-              } else {
-                this.router.navigate(['/paciente-home']); // Rol 3 -> PACIENTE
-              }
-            } else {
-              // Manejo en caso de que el arreglo llegue vacío [] (Usuario sin fila en Oracle)
-              this.mostrarToast('El usuario no tiene un rol asignado en el sistema', 'danger');
-            }
-          },
-          error: (err) => {
-            loading.dismiss();
-            console.error('Error 500 o 404 detectado en API:', err);
-            this.mostrarToast('Error de comunicación con el servidor', 'danger');
-          }
-        });
-    } catch (error: any) {
-      loading.dismiss();
-      console.error('Error de Firebase:', error.code);
-      this.manejarErrorFirebase(error.code);
-    }
+  if (!this.emailValue || !this.passwordValue) {
+    this.mostrarToast('Por favor, completa todos los campos', 'warning');
+    return;
   }
+
+  const loading = await this.loadingCtrl.create({
+    message: 'Autenticando...',
+    spinner: 'crescent'
+  });
+  await loading.present();
+
+  try {
+    // 1. Autenticación en Firebase Auth
+    const userCredential = await signInWithEmailAndPassword(
+      this.auth,
+      this.emailValue.trim(),
+      this.passwordValue
+    );
+    const uid = userCredential.user.uid;
+    const emailLogueado = userCredential.user.email?.toLowerCase() || '';
+
+    // BYPASS DE EMERGENCIA PARA DESARROLLO
+    if (emailLogueado.endsWith('@cesfam.cl')) {
+      loading.dismiss();
+      console.log('Bypass activado: Correo institucional detectado. Redirigiendo a SOME...');
+      this.router.navigate(['/personal-some']);
+      return; 
+    }
+
+    // 2. Consulta del Rol en el servidor Oracle (Cambiado a Objeto Directo)
+    this.http.get<{success: boolean, rol: string}>(`http://localhost:3000/api/obtener-rol/${uid}`)
+      .subscribe({
+        next: (res) => {
+          loading.dismiss();
+          
+          // Verificamos el objeto tal cual lo entrega tu index.js exitoso
+          if (res && res.success) {
+            const userRol = res.rol.toUpperCase(); // Captura 'PACIENTE' o 'SOME'
+            console.log('Rol detectado desde Oracle:', userRol);
+
+            // Mapeamos según el string que procesa tu Node.js
+            if (userRol === 'SOME') {
+              this.router.navigate(['/personal-some']);
+            } else if (userRol === 'PACIENTE') {
+              this.router.navigate(['/paciente-home']); // <-- AQUÍ ENTRARÁ TU PACIENTE DIRECTO
+            } else {
+              this.mostrarToast('Rol no reconocido por el sistema', 'warning');
+            }
+          } else {
+            this.mostrarToast('El usuario no tiene un rol asignado en el sistema', 'danger');
+          }
+        },
+        error: (err) => {
+          loading.dismiss();
+          console.error('Error detectado en API:', err);
+          this.mostrarToast('Error: Usuario no vinculado en el sistema médico', 'danger');
+        }
+      });
+  } catch (error: any) {
+    loading.dismiss();
+    console.error('Error de Firebase:', error.code);
+    this.manejarErrorFirebase(error.code);
+  }
+}
 
   private async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastCtrl.create({
