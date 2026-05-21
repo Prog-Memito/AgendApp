@@ -58,36 +58,54 @@ export class LoginPage {
     await loading.present();
 
     try {
-      // --- CORRECCIÓN AQUÍ ---
-      // Antes enviabas 'this.passwordType', ahora enviamos 'this.passwordValue'
+      // 1. Autenticación en Firebase Auth
       const userCredential = await signInWithEmailAndPassword(
         this.auth,
         this.emailValue.trim(),
         this.passwordValue
       );
       const uid = userCredential.user.uid;
+      const emailLogueado = userCredential.user.email?.toLowerCase() || '';
 
-      // Consulta del Rol en el servidor Oracle
-      this.http.get<{success: boolean, rol: string}>(`http://localhost:3000/api/obtener-rol/${uid}`)
-  .subscribe({
-    next: (res) => {
-      loading.dismiss();
-      if (res.success) {
-        const rolLimpio = res.rol.toUpperCase(); // Convertimos a SOME o PACIENTE
-        
-        if (rolLimpio === 'SOME') {
-          this.router.navigate(['/pagina-some']);
-        } else {
-          this.router.navigate(['/paciente-home']);
-        }
+      // --- BYPASS DE EMERGENCIA PARA DESARROLLO ---
+      // Si el correo termina en @cesfam.cl, entra directo a SOME sin pasar por Oracle
+      if (emailLogueado.endsWith('@cesfam.cl')) {
+        loading.dismiss();
+        console.log('Bypass activado: Correo institucional detectado. Redirigiendo a SOME...');
+        this.router.navigate(['/personal-some']);
+        return; // Detiene la ejecución aquí
       }
-    },
-    error: (err) => {
-      loading.dismiss();
-      console.error('Error 500 o 404 detectado:', err);
-      this.mostrarToast('Error de comunicación con el servidor', 'danger');
-    }
-  });
+
+      // 2. Consulta del Rol en el servidor Oracle si no es correo institucional
+      this.http.get<any[]>(`http://localhost:3000/api/obtener-rol/${uid}`)
+        .subscribe({
+          next: (res) => {
+            loading.dismiss();
+            
+            // Verificamos que el arreglo contenga datos devueltos por la query de Node
+            if (res && res.length > 0) {
+              // Extraemos el ID numérico de la primera fila del arreglo
+              const idTipoUsuario = res[0].USUARIO_ID_TP_USER;
+              
+              // Mapeamos según los roles numéricos de la base de datos
+              if (idTipoUsuario === 1) {
+                this.router.navigate(['/personal-some']); // Rol 1 -> SOME
+              } else if (idTipoUsuario === 2) {
+                this.router.navigate(['/medico-home']); // Rol 2 -> MÉDICO
+              } else {
+                this.router.navigate(['/paciente-home']); // Rol 3 -> PACIENTE
+              }
+            } else {
+              // Manejo en caso de que el arreglo llegue vacío [] (Usuario sin fila en Oracle)
+              this.mostrarToast('El usuario no tiene un rol asignado en el sistema', 'danger');
+            }
+          },
+          error: (err) => {
+            loading.dismiss();
+            console.error('Error 500 o 404 detectado en API:', err);
+            this.mostrarToast('Error de comunicación con el servidor', 'danger');
+          }
+        });
     } catch (error: any) {
       loading.dismiss();
       console.error('Error de Firebase:', error.code);
@@ -108,7 +126,7 @@ export class LoginPage {
   private manejarErrorFirebase(code: string) {
     switch (code) {
       case 'auth/user-not-found':
-      case 'auth/invalid-credential': // Firebase ahora usa este código general por seguridad
+      case 'auth/invalid-credential': 
         this.mostrarToast('Correo o contraseña incorrectos', 'danger');
         break;
       case 'auth/wrong-password':
