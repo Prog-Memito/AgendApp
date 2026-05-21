@@ -2,7 +2,7 @@ const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
 
-//PARCHE DE COMPATIBILIDAD ORACLE
+// --- PARCHE DE COMPATIBILIDAD ORACLE ---
 try {
     oracledb.initOracleClient();
     console.log("Oracle Instant Client inicializado correctamente.");
@@ -20,7 +20,8 @@ const dbConfig = {
     connectString: 'localhost:1521/xe'
 };
 
-//ENDPOINTS EXISTENTES
+// --- ENDPOINTS EXISTENTES (SIN CAMBIOS) ---
+
 app.get('/api/validar-paciente/:run', async (req, res) => {
     const { run } = req.params;
     let connection;
@@ -65,7 +66,7 @@ app.post('/api/vincular-paciente', async (req, res) => {
     }
 });
 
-//ENDPOINT OBTENER ROL
+// --- ENDPOINT OBTENER ROL CORREGIDO (Línea del Error) ---
 app.get('/api/obtener-rol/:uid', async (req, res) => {
     const { uid } = req.params;
     let connection;
@@ -196,61 +197,71 @@ app.put('/api/actualizar-perfil-paciente', async (req, res) => {
     }
 });
 
-//Endpoint para obtener disponibilidad filtrada por fecha (YYYY-MM-DD)
-app.get('/api/disponibilidad-medica/:fecha', async (req, res) => {
-    const { fecha } = req.params;
+// Mostrar Estadísticas clave para el SOME en un solo endpoint optimizado
+app.get('/api/estadisticas-some', async (req, res) => {
     let connection;
-
-    console.log(`\n--- NUEVA SOLICITUD DE AGENDA PARA LA FECHA: ${fecha} ---`);
-
     try {
         connection = await oracledb.getConnection(dbConfig);
 
+        // Subconsultas analíticas nativas ajustadas al DDL real del script SQL
         const sql = `
-            SELECT M.NOMB_MED || ' ' || M.APELL_PAT_MED AS NOMBRE_PROFESIONAL, 
-                TO_CHAR(A.HORA_INI, 'HH24:MI') AS HORA_COMPLETA
-            FROM AGEND_MED A
-            INNER JOIN MEDICO M ON 
-                REPLACE(REPLACE(A.MEDICO_RUN_MED, '.', ''), '-', '') = 
-                REPLACE(REPLACE(M.RUN_MED, '.', ''), '-', '')
-            WHERE TRUNC(A.DIA_SEMANA) = TO_DATE(:f, 'YYYY-MM-DD')
-            ORDER BY NOMBRE_PROFESIONAL, HORA_COMPLETA ASC
+            SELECT 
+                (SELECT COUNT(*) FROM CITA_MEDICA) AS TOTAL_CITAS,
+                
+                (SELECT S.NOMB_SERV 
+                 FROM CITA_MEDICA C 
+                 JOIN CARTA_SERVICIO S ON C.CARTA_SERVICIO_ID_SERV = S.ID_SERV 
+                 GROUP BY S.NOMB_SERV 
+                 ORDER BY COUNT(*) DESC 
+                 FETCH FIRST 1 ROWS ONLY) AS TIPO_MAS_AGENDADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA GROUP BY CARTA_SERVICIO_ID_SERV) AS CITAS_TIPO,
+                
+                (SELECT TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') FROM CITA_MEDICA GROUP BY TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') ORDER BY COUNT(*) DESC FETCH FIRST 1 ROWS ONLY) AS DIA_MAS_AGENDADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA GROUP BY TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH')) AS CITAS_DIA,
+                
+                (SELECT BOXES_ID_BOX FROM CITA_MEDICA WHERE BOXES_ID_BOX IS NOT NULL GROUP BY BOXES_ID_BOX ORDER BY COUNT(*) DESC FETCH FIRST 1 ROWS ONLY) AS BOX_MAS_USADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA WHERE BOXES_ID_BOX IS NOT NULL GROUP BY BOXES_ID_BOX) AS CITAS_BOX
+            FROM DUAL
         `;
 
-        const result = await connection.execute(
-            sql, 
-            { f: fecha }, 
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-        );
-
-        // LOG CRÍTICO: Esto nos dirá si Oracle encuentra filas o no
-        console.log(`Filas encontradas directamente en Oracle para el ${fecha}:`, result.rows);
-
-        const agrupado = {};
+        const result = await connection.execute(sql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
         
-        result.rows.forEach(fila => {
-            const nombre = fila.NOMBRE_PROFESIONAL;
-            const hora = fila.HORA_COMPLETA;
-
-            if (!agrupado[nombre]) {
-                agrupado[nombre] = {
-                    nombreMedico: nombre,
-                    horas: []
-                };
-            }
-            agrupado[nombre].horas.push(hora);
-        });
-
-        const respuestaFinal = Object.values(agrupado);
-        console.log("Estructura final enviada a Ionic:", JSON.stringify(respuestaFinal));
-
-        res.json(respuestaFinal);
-
+        if (result.rows && result.rows.length > 0) {
+            const data = result.rows[0];
+            
+            res.json({
+                success: true,
+                totalCitas: data.TOTAL_CITAS || 0,
+                tipoMasAgendado: data.TIPO_MAS_AGENDADO ? data.TIPO_MAS_AGENDADO.trim() : 'N/A',
+                citasTipo: data.CITAS_TIPO || 0,
+                diaMasAgendado: data.DIA_MAS_AGENDADO ? data.DIA_MAS_AGENDADO.trim() : 'N/A',
+                citasDia: data.CITAS_DIA || 0,
+                boxMasUsado: data.BOX_MAS_USADO ? `Box ${data.BOX_MAS_USADO}` : 'N/A',
+                citasBox: data.CITAS_BOX || 0
+            });
+        } else {
+            res.json({
+                success: true,
+                totalCitas: 0,
+                tipoMasAgendado: 'N/A',
+                citasTipo: 0,
+                diaMasAgendado: 'N/A',
+                citasDia: 0,
+                boxMasUsado: 'N/A',
+                citasBox: 0
+            });
+        }
     } catch (err) {
-        console.error("❌ Error interno del servidor en Oracle:", err.message);
-        res.status(500).json({ error: "Error al consultar la agenda médica." });
+        console.error("❌ Error al calcular estadísticas en Oracle:", err);
+        res.status(500).json({ success: false, error: err.message });
     } finally {
-        if (connection) await connection.close();
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error("Error al cerrar la conexión:", closeErr);
+            }
+        }
     }
 });
 
