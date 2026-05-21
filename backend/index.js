@@ -197,4 +197,72 @@ app.put('/api/actualizar-perfil-paciente', async (req, res) => {
     }
 });
 
+// Mostrar Estadísticas clave para el SOME en un solo endpoint optimizado
+app.get('/api/estadisticas-some', async (req, res) => {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        // Subconsultas analíticas nativas ajustadas al DDL real del script SQL
+        const sql = `
+            SELECT 
+                (SELECT COUNT(*) FROM CITA_MEDICA) AS TOTAL_CITAS,
+                
+                (SELECT S.NOMB_SERV 
+                 FROM CITA_MEDICA C 
+                 JOIN CARTA_SERVICIO S ON C.CARTA_SERVICIO_ID_SERV = S.ID_SERV 
+                 GROUP BY S.NOMB_SERV 
+                 ORDER BY COUNT(*) DESC 
+                 FETCH FIRST 1 ROWS ONLY) AS TIPO_MAS_AGENDADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA GROUP BY CARTA_SERVICIO_ID_SERV) AS CITAS_TIPO,
+                
+                (SELECT TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') FROM CITA_MEDICA GROUP BY TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') ORDER BY COUNT(*) DESC FETCH FIRST 1 ROWS ONLY) AS DIA_MAS_AGENDADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA GROUP BY TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH')) AS CITAS_DIA,
+                
+                (SELECT BOXES_ID_BOX FROM CITA_MEDICA WHERE BOXES_ID_BOX IS NOT NULL GROUP BY BOXES_ID_BOX ORDER BY COUNT(*) DESC FETCH FIRST 1 ROWS ONLY) AS BOX_MAS_USADO,
+                (SELECT MAX(COUNT(*)) FROM CITA_MEDICA WHERE BOXES_ID_BOX IS NOT NULL GROUP BY BOXES_ID_BOX) AS CITAS_BOX
+            FROM DUAL
+        `;
+
+        const result = await connection.execute(sql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        
+        if (result.rows && result.rows.length > 0) {
+            const data = result.rows[0];
+            
+            res.json({
+                success: true,
+                totalCitas: data.TOTAL_CITAS || 0,
+                tipoMasAgendado: data.TIPO_MAS_AGENDADO ? data.TIPO_MAS_AGENDADO.trim() : 'N/A',
+                citasTipo: data.CITAS_TIPO || 0,
+                diaMasAgendado: data.DIA_MAS_AGENDADO ? data.DIA_MAS_AGENDADO.trim() : 'N/A',
+                citasDia: data.CITAS_DIA || 0,
+                boxMasUsado: data.BOX_MAS_USADO ? `Box ${data.BOX_MAS_USADO}` : 'N/A',
+                citasBox: data.CITAS_BOX || 0
+            });
+        } else {
+            res.json({
+                success: true,
+                totalCitas: 0,
+                tipoMasAgendado: 'N/A',
+                citasTipo: 0,
+                diaMasAgendado: 'N/A',
+                citasDia: 0,
+                boxMasUsado: 'N/A',
+                citasBox: 0
+            });
+        }
+    } catch (err) {
+        console.error("❌ Error al calcular estadísticas en Oracle:", err);
+        res.status(500).json({ success: false, error: err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error("Error al cerrar la conexión:", closeErr);
+            }
+        }
+    }
+});
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
