@@ -2,7 +2,7 @@ const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
 
-// --- PARCHE DE COMPATIBILIDAD ORACLE ---
+//PARCHE DE COMPATIBILIDAD ORACLE
 try {
     oracledb.initOracleClient();
     console.log("Oracle Instant Client inicializado correctamente.");
@@ -20,8 +20,7 @@ const dbConfig = {
     connectString: 'localhost:1521/xe'
 };
 
-// --- ENDPOINTS EXISTENTES (SIN CAMBIOS) ---
-
+//ENDPOINTS EXISTENTES
 app.get('/api/validar-paciente/:run', async (req, res) => {
     const { run } = req.params;
     let connection;
@@ -66,7 +65,7 @@ app.post('/api/vincular-paciente', async (req, res) => {
     }
 });
 
-// --- ENDPOINT OBTENER ROL CORREGIDO (Línea del Error) ---
+//ENDPOINT OBTENER ROL
 app.get('/api/obtener-rol/:uid', async (req, res) => {
     const { uid } = req.params;
     let connection;
@@ -192,6 +191,64 @@ app.put('/api/actualizar-perfil-paciente', async (req, res) => {
     } catch (err) {
         console.error("Error al actualizar perfil en Oracle:", err.message);
         res.status(500).json({ success: false, error: "Error interno de base de datos" });
+    } finally {
+        if (connection) await connection.close();
+    }
+});
+
+//Endpoint para obtener disponibilidad filtrada por fecha (YYYY-MM-DD)
+app.get('/api/disponibilidad-medica/:fecha', async (req, res) => {
+    const { fecha } = req.params;
+    let connection;
+
+    console.log(`\n--- NUEVA SOLICITUD DE AGENDA PARA LA FECHA: ${fecha} ---`);
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        const sql = `
+            SELECT M.NOMB_MED || ' ' || M.APELL_PAT_MED AS NOMBRE_PROFESIONAL, 
+                TO_CHAR(A.HORA_INI, 'HH24:MI') AS HORA_COMPLETA
+            FROM AGEND_MED A
+            INNER JOIN MEDICO M ON 
+                REPLACE(REPLACE(A.MEDICO_RUN_MED, '.', ''), '-', '') = 
+                REPLACE(REPLACE(M.RUN_MED, '.', ''), '-', '')
+            WHERE TRUNC(A.DIA_SEMANA) = TO_DATE(:f, 'YYYY-MM-DD')
+            ORDER BY NOMBRE_PROFESIONAL, HORA_COMPLETA ASC
+        `;
+
+        const result = await connection.execute(
+            sql, 
+            { f: fecha }, 
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        // LOG CRÍTICO: Esto nos dirá si Oracle encuentra filas o no
+        console.log(`Filas encontradas directamente en Oracle para el ${fecha}:`, result.rows);
+
+        const agrupado = {};
+        
+        result.rows.forEach(fila => {
+            const nombre = fila.NOMBRE_PROFESIONAL;
+            const hora = fila.HORA_COMPLETA;
+
+            if (!agrupado[nombre]) {
+                agrupado[nombre] = {
+                    nombreMedico: nombre,
+                    horas: []
+                };
+            }
+            agrupado[nombre].horas.push(hora);
+        });
+
+        const respuestaFinal = Object.values(agrupado);
+        console.log("Estructura final enviada a Ionic:", JSON.stringify(respuestaFinal));
+
+        res.json(respuestaFinal);
+
+    } catch (err) {
+        console.error("❌ Error interno del servidor en Oracle:", err.message);
+        res.status(500).json({ error: "Error al consultar la agenda médica." });
     } finally {
         if (connection) await connection.close();
     }

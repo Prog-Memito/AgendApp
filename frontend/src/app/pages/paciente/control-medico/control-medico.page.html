@@ -36,29 +36,43 @@
       </ion-modal>
       
       <p class="helper-text">Disponibilidad para los próximos 7 días</p>
+
+      <ion-button expand="block" mode="ios" class="ion-margin-top" [disabled]="!fechaSeleccionada" (click)="buscarHorasManual()">
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        Buscar Disponibilidad
+      </ion-button>
+
     </ion-card-content>
   </ion-card>
 
-  <div *ngIf="!fechaSeleccionada" class="empty-state">
+  <div *ngIf="!mostrarContenido" class="empty-state">
     <div class="empty-icon-container">
       <ion-icon name="calendar-outline"></ion-icon>
     </div>
-    <p>Selecciona una fecha para ver la disponibilidad</p>
+    <p>Selecciona una fecha y presiona buscar para ver la disponibilidad</p>
   </div>
 
-  <div *ngIf="fechaSeleccionada" class="availability-list">
-    <ion-card class="doctor-card">
+  <div *ngIf="mostrarContenido && listaMedicos.length === 0" class="empty-state">
+    <div class="empty-icon-container">
+      <ion-icon name="information-circle-outline"></ion-icon>
+    </div>
+    <p>No hay horas disponibles para la fecha seleccionada.</p>
+  </div>
+
+  <div *ngIf="mostrarContenido && listaMedicos.length > 0" class="availability-list">
+    <ion-card class="doctor-card" *ngFor="let medico of listaMedicos">
       <ion-card-header>
-        <ion-card-title>Dra. María González</ion-card-title>
+        <ion-card-title><strong>{{ medico.nombreMedico }}</strong></ion-card-title>
         <ion-card-subtitle>Medicina General</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <div class="day-label">{{ fechaFormateada }}</div>
-        <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Tarde</div>
+        <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Disponible</div>
+        
         <div class="hours-grid">
-          <ion-button fill="clear" class="hour-btn">15:00</ion-button>
-          <ion-button fill="clear" class="hour-btn">16:00</ion-button>
-          <ion-button fill="clear" class="hour-btn">17:00</ion-button>
+          <ion-button fill="clear" class="hour-btn" *ngFor="let hora of medico.horas">
+            {{ hora }}
+          </ion-button>
         </div>
       </ion-card-content>
     </ion-card>
