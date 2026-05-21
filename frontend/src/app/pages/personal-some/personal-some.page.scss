@@ -1,0 +1,161 @@
+:host {
+  --header-blue: #4f46e5;
+  --bg-gray: #f9fafb;
+  --text-dark: #111827;
+  --text-muted: #6b7280;
+  --white: #ffffff;
+}
+
+.admin-bg {
+  --background: var(--bg-gray);
+}
+
+/* Header Estilo Panel */
+.main-header {
+  background: var(--header-blue);
+  padding: 12px 40px;
+  color: white;
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    ion-icon { font-size: 1.5rem; }
+  }
+
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    .user-email { font-size: 0.9rem; opacity: 0.9; }
+    .btn-logout {
+      --background: #ffffff1a;
+      --background-hover: #ffffff33;
+      --color: white;
+      --border-radius: 8px;
+      text-transform: none;
+      margin: 0;
+    }
+  }
+}
+
+.dashboard-wrapper {
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin: 0;
+  }
+  p {
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+  }
+  .btn-manage {
+    --background: var(--header-blue);
+    --border-radius: 8px;
+    text-transform: none;
+    font-weight: 600;
+    height: 45px;
+  }
+}
+
+/* KPI Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: var(--white);
+
+  .stat-inner {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .stat-data {
+    display: flex;
+    flex-direction: column;
+    .label { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
+    .value { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); margin: 4px 0; }
+    .sub-value { font-size: 0.8rem; color: var(--text-muted); }
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .icon-blue { background: #eff6ff; color: #3b82f6; }
+  .icon-purple { background: #faf5ff; color: #a855f7; }
+  .icon-green { background: #f0fdf4; color: #22c55e; }
+  .icon-orange { background: #fff7ed; color: #f97316; }
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.chart-card {
+  margin: 0;
+  border-radius: 12px;
+  background: var(--white);
+  min-height: 280px;
+
+  .chart-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #f3f4f6;
+    
+    ion-icon { color: #10b981; font-size: 1.4rem; }
+    h2 { font-size: 1rem; font-weight: 700; color: var(--text-dark); margin: 0; }
+  }
+
+  .chart-body {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+}

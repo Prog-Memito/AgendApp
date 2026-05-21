@@ -1,0 +1,108 @@
+<ion-content [fullscreen]="true" class="admin-bg">
+  <header class="main-header">
+    <div class="header-content">
+      <div class="brand">
+        <ion-icon name="shield-checkmark"></ion-icon>
+        <span>Panel de Administración</span>
+      </div>
+      <div class="user-actions">
+        <span class="user-email">{{ correoUsuario }}</span>
+        <ion-button fill="solid" class="btn-logout" (click)="cerrarSesion()">
+          Cerrar Sesión
+        </ion-button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-wrapper">
+    <div class="hero-section">
+      <div class="hero-text">
+        <h1>Estadísticas de Agendamiento</h1>
+        <p>Visualiza el comportamiento de las citas médicas en el sistema</p>
+      </div>
+      <ion-button class="btn-manage">
+        <ion-icon slot="start" name="calendar-outline"></ion-icon>
+        Gestionar Disponibilidad
+      </ion-button>
+    </div>
+
+    <div class="stats-grid">
+      <ion-card class="stat-card">
+        <div class="stat-inner">
+          <div class="stat-data">
+            <span class="label">Total de Citas</span>
+            <span class="value">0</span>
+          </div>
+          <div class="stat-icon icon-blue"><ion-icon name="calendar-clear-outline"></ion-icon></div>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card">
+        <div class="stat-inner">
+          <div class="stat-data">
+            <span class="label">Tipo Más Agendado</span>
+            <span class="value">N/A</span>
+            <span class="sub-value">0 citas</span>
+          </div>
+          <div class="stat-icon icon-purple"><ion-icon name="trending-up-outline"></ion-icon></div>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card">
+        <div class="stat-inner">
+          <div class="stat-data">
+            <span class="label">Día Más Agendado</span>
+            <span class="value">N/A</span>
+            <span class="sub-value">0 citas</span>
+          </div>
+          <div class="stat-icon icon-green"><ion-icon name="time-outline"></ion-icon></div>
+        </div>
+      </ion-card>
+
+      <ion-card class="stat-card">
+        <div class="stat-inner">
+          <div class="stat-data">
+            <span class="label">Box Más Usado</span>
+            <span class="value">N/A</span>
+            <span class="sub-value">0 citas</span>
+          </div>
+          <div class="stat-icon icon-orange"><ion-icon name="business-outline"></ion-icon></div>
+        </div>
+      </ion-card>
+    </div>
+
+    <div class="charts-grid">
+      <ion-card class="chart-card">
+        <div class="chart-header">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+          <h2>Citas por Día de la Semana</h2>
+        </div>
+        <div class="chart-body"><p>No hay datos disponibles</p></div>
+      </ion-card>
+
+      <ion-card class="chart-card">
+        <div class="chart-header">
+          <ion-icon name="pie-chart-outline"></ion-icon>
+          <h2>Citas por Tipo de Atención</h2>
+        </div>
+        <div class="chart-body"><p>No hay datos disponibles</p></div>
+      </ion-card>
+
+      <ion-card class="chart-card">
+        <div class="chart-header">
+          <ion-icon name="people-circle-outline"></ion-icon>
+          <h2>Citas por Profesional</h2>
+        </div>
+        <div class="chart-body"><p>No hay datos disponibles</p></div>
+      </ion-card>
+
+      <ion-card class="chart-card">
+        <div class="chart-header">
+          <ion-icon name="apps-outline"></ion-icon>
+          <h2>Uso de Boxes</h2>
+        </div>
+        <div class="chart-body"><p>No hay datos disponibles</p></div>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>
