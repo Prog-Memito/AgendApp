@@ -49,6 +49,10 @@ export const routes: Routes = [
   {
     path: 'personal-some',
     loadComponent: () => import('./pages/personal-some/personal-some.page').then( m => m.PersonalSomePage)
+  },
+  {
+    path: 'gestion-disponibilidad',
+    loadComponent: () => import('./pages/personal-some/gestion-disponibilidad/gestion-disponibilidad.page').then( m => m.GestionDisponibilidadPage)
   }
 
 

@@ -26,8 +26,17 @@ export class PersonalSomePage implements OnInit {
   private navCtrl: NavController = inject(NavController);
   private auth: Auth = inject(Auth);
 
-  // Variable para almacenar el correo dinámico
+  // Variables de estado del componente
   correoUsuario: string = 'Cargando...';
+
+  // Variables dinámicas para las tarjetas de estadísticas conectados a Oracle
+  totalCitas: number = 0;
+  tipoMasAgendado: string = 'N/A';
+  citasTipo: number = 0;
+  diaMasAgendado: string = 'N/A';
+  citasDia: number = 0;
+  boxMasUsado: string = 'N/A';
+  citasBox: number = 0;
 
   constructor() {
     addIcons({ 
@@ -43,14 +52,38 @@ export class PersonalSomePage implements OnInit {
     const usuarioActivo = this.auth.currentUser;
     
     if (usuarioActivo && usuarioActivo.email) {
-      this.correoUsuario = usuarioActivo.email; // Guardamos el correo real (ej: ignacio.gonzalez@cesfam.cl)
+      this.correoUsuario = usuarioActivo.email; // Guardamos el correo real
     } else {
       this.correoUsuario = 'Sin sesión activa';
     }
+
+    // Consulta directa a tu servidor Express de Node para rellenar los cuadros
+    fetch('http://localhost:3000/api/estadisticas-some')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          this.totalCitas = data.totalCitas;
+          this.tipoMasAgendado = data.tipoMasAgendado;
+          this.citasTipo = data.citasTipo;
+          
+          // Agregamos .trim() para limpiar los espacios fantasmas que agrega Oracle a los días
+          this.diaMasAgendado = data.diaMasAgendado ? data.diaMasAgendado.trim() : 'N/A';
+          
+          this.citasDia = data.citasDia;
+          this.boxMasUsado = data.boxMasUsado;
+          this.citasBox = data.citasBox;
+        }
+      })
+      .catch(err => console.error('Error cargando estadísticas en frontend:', err));
   }
 
   cerrarSesion() {
     // Opcional: puedes agregar un this.auth.signOut() aquí si quieres destruir el token de Firebase
     this.navCtrl.navigateRoot('/login');
+  }
+
+  // --- FUNCIÓN AGREGADA PARA ENLAZAR EL BOTÓN ---
+  irAGestionarDisponibilidad() {
+    this.navCtrl.navigateForward('/gestion-disponibilidad');
   }
 }

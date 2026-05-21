@@ -1,0 +1,76 @@
+<ion-content [fullscreen]="true" class="admin-bg">
+  
+  <div class="back-bar">
+    <ion-button fill="clear" (click)="volverAlDashboard()" class="btn-back">
+      <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+      Gestión de Disponibilidad de Médicos
+    </ion-button>
+  </div>
+
+  <div class="dashboard-wrapper">
+    
+    <div class="info-banner">
+      <div class="info-content">
+        <ion-icon name="information-circle-outline" class="info-icon"></ion-icon>
+        <div class="info-text">
+          <h3>Cómo usar este calendario</h3>
+          <p>Selecciona un profesional y una fecha para ver y editar la disponibilidad. Click en un horario para cambiar entre "Disponible" y "No disponible". Los horarios marcados como "Consulta tomada" no se pueden editar.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="states-row">
+      <div class="state-indicator border-green">
+        <div class="indicator-header">
+          <span class="dot dot-green"></span>
+          <h4>Disponible</h4>
+        </div>
+        <p>Los pacientes pueden agendar este horario</p>
+      </div>
+
+      <div class="state-indicator border-gray">
+        <div class="indicator-header">
+          <span class="dot dot-gray"></span>
+          <h4>No disponible</h4>
+        </div>
+        <p>Horario bloqueado, no visible para pacientes</p>
+      </div>
+
+      <div class="state-indicator border-blue">
+        <div class="indicator-header">
+          <span class="dot dot-blue"></span>
+          <h4>Consulta tomada</h4>
+        </div>
+        <p>Hora agendada por un paciente (no editable)</p>
+      </div>
+    </div>
+
+    <ion-card class="filters-card">
+      <ion-card-content>
+        <h3 class="filter-title">Filtros</h3>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label>Seleccionar Profesional</label>
+            <select class="custom-select">
+              <option value="">-- Selecciona un profesional --</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>Seleccionar Fecha</label>
+            <input type="date" class="custom-input">
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="empty-state-card">
+      <ion-card-content class="empty-content">
+        <ion-icon name="calendar-outline" class="empty-icon"></ion-icon>
+        <h2>Selecciona un profesional y una fecha</h2>
+        <p>Usa los filtros de arriba para comenzar a gestionar la disponibilidad</p>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>
