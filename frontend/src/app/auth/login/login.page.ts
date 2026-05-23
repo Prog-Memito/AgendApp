@@ -76,27 +76,25 @@ export class LoginPage {
         return; // Detiene la ejecución aquí
       }
 
-      // 2. Consulta del Rol en el servidor Oracle si no es correo institucional
-      this.http.get<any[]>(`http://localhost:3000/api/obtener-rol/${uid}`)
+      // 2. Consulta del Rol en el servidor Oracle si no es correo institucional (Cambiado a <any>)
+      this.http.get<any>(`http://localhost:3000/api/obtener-rol/${uid}`)
         .subscribe({
           next: (res) => {
             loading.dismiss();
             
-            // Verificamos que el arreglo contenga datos devueltos por la query de Node
-            if (res && res.length > 0) {
-              // Extraemos el ID numérico de la primera fila del arreglo
-              const idTipoUsuario = res[0].USUARIO_ID_TP_USER;
+            // Verificamos el formato del objeto JSON devuelto por Node
+            if (res && res.success && res.rol) {
               
-              // Mapeamos según los roles numéricos de la base de datos
-              if (idTipoUsuario === 1) {
-                this.router.navigate(['/personal-some']); // Rol 1 -> SOME
-              } else if (idTipoUsuario === 2) {
-                this.router.navigate(['/medico-home']); // Rol 2 -> MÉDICO
+              // Mapeamos según los roles en texto que entrega tu backend
+              if (res.rol === 'SOME') {
+                this.router.navigate(['/personal-some']); // Redirige a SOME
+              } else if (res.rol === 'PACIENTE') {
+                this.router.navigate(['/paciente-home']); // Redirige a PACIENTE
               } else {
-                this.router.navigate(['/paciente-home']); // Rol 3 -> PACIENTE
+                this.mostrarToast('Rol desconocido en el sistema', 'warning');
               }
+
             } else {
-              // Manejo en caso de que el arreglo llegue vacío [] (Usuario sin fila en Oracle)
               this.mostrarToast('El usuario no tiene un rol asignado en el sistema', 'danger');
             }
           },

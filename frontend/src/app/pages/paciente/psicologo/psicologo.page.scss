@@ -1,32 +1,218 @@
+// --- CONFIGURACIÓN GLOBAL DE LA PANTALLA ---
+ion-content {
+  // Fuerza el tono azulino muy sutil de fondo de la app en cualquier modo
+  --background: #f8faff !important; 
+  background: #f8faff !important;
+  color: #011a33 !important;
+}
+
+ion-toolbar {
+  --background: #ffffff !important;
+  --color: #011a33 !important;
+  color: #011a33 !important;
+  font-weight: 700;
+}
+
+// --- CABECERA DE SELECCIÓN (TÍTULO Y BOTÓN CAMBIAR) ---
+.selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #011a33 !important; // Mantiene el texto oscuro institucional
+    margin: 0;
+  }
+
+  ion-button {
+    --color: #1a6dff !important;
+    color: #1a6dff !important;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-transform: none;
+  }
+}
+
+// --- CONTENEDOR PRINCIPAL DE SELECCIÓN DE FECHA ---
+.date-selection-card {
+  --background: #ffffff !important; // Ataca la propiedad nativa de Ionic
+  background: #ffffff !important;   
+  border-radius: 16px;
+  margin: 0 0 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  
+  ion-card-content {
+    padding: 20px;
+    background: #ffffff !important;
+  }
+}
+
+ion-label {
+  color: #2d3748 !important; // Evita que se vuelva gris claro o blanco
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+// --- CAMPO INPUT SIMULADO DEL CALENDARIO ---
 .calendar-input-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 1px solid #cbd5e1 !important; // Gris limpio y marcado para el borde
+  border-radius: 12px;
   padding: 12px 15px;
   margin-top: 10px;
-  background: #fff;
+  background: #ffffff !important;       // Fondo blanco plano obligatorio
   cursor: pointer;
 
   .placeholder {
-    color: #999;
+    color: #94a3b8 !important;          // Gris suave legible para "dd/mm/aaaa"
     font-size: 1rem;
   }
 
   .selected-value {
-    color: #333;
+    color: #011a33 !important;          // Color oscuro para la fecha seleccionada
     font-size: 1rem;
+    font-weight: 600;
   }
 
   ion-icon {
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 1.3rem;
+    color: #a0aec0 !important;          // Ícono del calendario visible
   }
 }
 
-// Estilo del modal para que no ocupe toda la pantalla (opcional)
+.helper-text {
+  font-size: 0.82rem;
+  color: #718096 !important;
+  margin: 10px 0 0 2px;
+}
+
+// --- VENTANA EMERGENTE CALENDARIO (ION-MODAL) ---
 ion-modal {
   --height: auto;
   --border-radius: 16px;
+  --background: #ffffff !important;
+  
+  // Estilos internos para el componente nativo del calendario de Ionic
+  ion-datetime {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    border-radius: 16px;
+  }
+}
+
+// --- ESTADO INICIAL (RECUADRO CELESTE INFERIOR) ---
+.empty-state {
+  --background: #f0f6ff !important; // Fondo azul celeste sutil del diseño
+  background: #f0f6ff !important;   
+  border: 1px solid #d8e7ff;
+  border-radius: 16px;
+  padding: 35px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 15px;
+  text-align: center;
+
+  ion-icon {
+    color: #1a6dff !important;      // Ícono azul vibrante centrado
+    font-size: 2.8rem; 
+  }
+
+  p {
+    color: #2d3748 !important;      // Texto visible e informativo
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+// --- LISTADO DE DISPONIBILIDAD (TARJETAS DE MÉDICOS) ---
+.availability-list {
+  margin-top: 15px;
+
+  .doctor-card {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    border-radius: 16px;
+    margin: 0 0 16px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid #edf2f7;
+
+    ion-card-title {
+      color: #011a33 !important;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    ion-card-subtitle {
+      color: #718096 !important;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: none;
+      margin-top: 2px;
+    }
+
+    ion-card-content {
+      background: #ffffff !important;
+      padding-top: 0;
+    }
+  }
+
+  .day-label {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 8px;
+  }
+
+  .shift-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #4a5568;
+    font-weight: 600;
+    margin-bottom: 12px;
+
+    ion-icon {
+      color: #ecc94b; // Tono amarillo/naranja sutil para el icono de jornada
+    }
+  }
+
+  // Distribución en grilla limpia para los bloques de horas
+  .hours-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    .hour-btn {
+      --background: #f0f6ff !important;
+      --color: #1a6dff !important;
+      --border-radius: 8px !important;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin: 0;
+      height: 42px;
+      background: #f0f6ff !important;
+      color: #1a6dff !important;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: none;
+      
+      // Efecto active/focus al presionar la hora
+      &:hover, &:focus {
+        --background: #1a6dff !important;
+        --color: #ffffff !important;
+        background: #1a6dff !important;
+        color: #ffffff !important;
+      }
+    }
+  }
 }
