@@ -48,7 +48,7 @@ export class GestionDisponibilidadPage implements OnInit {
   };
 
   constructor() {
-    // Registro de los iconos utilizados en el archivo HTML (Limpiado personAddOutline)
+    // Registro de los iconos utilizados en el archivo HTML
     addIcons({ 
       chevronBackOutline, 
       informationCircleOutline, 
@@ -61,30 +61,33 @@ export class GestionDisponibilidadPage implements OnInit {
   }
 
   ngOnInit() {
+    // AL ENTRAR A LA PÁGINA: Ejecuta la petición SQL mediante tu servicio
     this.cargarMedicos();
   }
 
-  
   volverAlDashboard() {
     // Te redirige de vuelta al Panel de Administración del SOME
     this.navCtrl.navigateBack('/personal-some'); 
   }
-
 
   abrirModalHorario(isOpen: boolean) {
     this.isModalHorarioOpen = isOpen;
     if (!isOpen) this.resetFormAgenda();
   }
 
-
   cargarMedicos() {
+    // Llama al endpoint de tu API que hace el "SELECT * FROM MEDICO"
     this.authService.getMedicos().subscribe({
       next: (res: any) => {
+        console.log('Datos recibidos de Oracle SQL:', res);
         if (res) {
-          this.listaMedicos = res.data ? res.data : res;
+          // Si tu API encapsula la respuesta en un objeto .data o .rows lo captura, si no usa la respuesta directa
+          this.listaMedicos = res.data ? res.data : (res.rows ? res.rows : res);
         }
       },
-      error: (err) => console.error('Error al cargar nómina de médicos desde Oracle:', err)
+      error: (err) => {
+        console.error('Error crítico al conectar con la tabla MEDICO de Oracle:', err);
+      }
     });
   }
 
@@ -92,7 +95,7 @@ export class GestionDisponibilidadPage implements OnInit {
     if (this.medicoSeleccionado && this.fechaSeleccionada) {
       this.fechaFormateadaTexto = this.formatearFechaTexto(this.fechaSeleccionada);
 
-      // Mapeo seguro con la clave primaria en mayúsculas de Oracle
+      // Mapeo adaptativo estricto a las mayúsculas de tu BD Oracle SQL
       const runMedico = this.medicoSeleccionado.RUN_MED || this.medicoSeleccionado.run_med;
 
       this.authService.getGestionDisponibilidad(runMedico, this.fechaSeleccionada).subscribe({
