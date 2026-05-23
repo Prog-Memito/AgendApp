@@ -265,4 +265,32 @@ app.get('/api/estadisticas-some', async (req, res) => {
     }
 });
 
+//Medicos de la base para mostrar??????
+app.get('/api/medicos', async (req, res) => {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        
+        // Ejecutamos la consulta directa a tu tabla MEDICO
+        const sql = `SELECT RUN_MED, NOMB_MED, APELL_PAT_MED FROM MEDICO ORDER BY NOMB_MED ASC`;
+        
+        const result = await connection.execute(sql, [], { outFormat: oracledb.OUT_FORMAT_OBJECT });
+        
+        // Enviamos las filas (rows) directo al frontend de Ionic
+        res.json(result.rows);
+        
+    } catch (err) {
+        console.error("❌ Error al obtener listado de médicos de Oracle:", err);
+        res.status(500).json({ error: "Error en el servidor al consultar la tabla MEDICO" });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (e) {
+                console.error("Error al cerrar conexión en médicos:", e);
+            }
+        }
+    }
+});
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
