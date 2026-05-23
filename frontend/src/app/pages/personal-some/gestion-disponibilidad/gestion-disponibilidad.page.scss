@@ -1,141 +1,303 @@
 :host {
   --bg-gray: #f8fafc;
-  --text-dark: #1e293b;
+  --text-dark: #011a33; // Ajustado al tono oscuro institucional
   --text-muted: #64748b;
   --white: #ffffff;
   --border-light: #e2e8f0;
+  --primary-purple: #5d5fef; // Tu morado institucional del SOME
+
+  // ANULAR MODO OSCURO DE IONIC FORZADAMENTE EN ESTA PÁGINA
+  background: var(--bg-gray) !important;
 }
 
-.admin-bg {
-  --background: var(--bg-gray);
+// --- FORZAR COLORES EN ELEMENTOS NATIVOS DE IONIC ---
+ion-content {
+  // Esto le quita el color negro que le mete Ionic por defecto
+  --background: var(--bg-gray) !important;
+  background: var(--bg-gray) !important;
+  color: var(--text-dark) !important;
 }
 
-.back-bar {
-  background: var(--white);
-  padding: 10px 20px;
-  border-bottom: 1px solid var(--border-light);
+// --- HEADER Y TOOLBAR INSTITUCIONAL (Morado) ---
+ion-header {
+  background: var(--primary-purple) !important;
   
-  .btn-back {
-    --color: var(--text-dark);
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-transform: none;
-    margin: 0;
-    ion-icon {
-      color: var(--text-dark);
-      font-size: 1.3rem;
+  ion-toolbar {
+    --background: var(--primary-purple) !important;
+    --color: #ffffff !important;
+    background: var(--primary-purple) !important;
+    color: #ffffff !important;
+
+    ion-title {
+      font-weight: 700 !important;
+      color: #ffffff !important;
+    }
+
+    ion-button {
+      --color: #ffffff !important;
+      color: #ffffff !important;
     }
   }
 }
 
-.dashboard-wrapper {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+// --- BARRA DE ACCIONES SUPERIORES (SOME) ---
+.some-actions-bar {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+
+  ion-button {
+    font-weight: 600;
+    --border-radius: 8px;
+    margin: 0;
+    text-transform: none;
+  }
 }
 
-.info-banner {
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 8px;
+// --- BLOQUE INFORMATIVO SUPERIOR ---
+.info-box {
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 12px;
   padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
 
-  .info-content {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .info-icon {
-    color: #3b82f6;
+  ion-icon {
+    color: #3b82f6 !important;
     font-size: 1.4rem;
     flex-shrink: 0;
-    margin-top: 2px;
   }
 
-  .info-text {
-    h3 { margin: 0 0 4px 0; color: #1e40af; font-size: 0.95rem; font-weight: 700; }
-    p { margin: 0; color: #1e3a8a; font-size: 0.85rem; line-height: 1.4; }
+  p {
+    color: #1e3a8a !important;
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.4;
+
+    strong {
+      color: #1e40af !important;
+      font-weight: 700;
+    }
   }
 }
 
-.states-row {
+// --- GRID DE LEYENDAS / ESTADOS ---
+.status-legend-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
+  margin-bottom: 24px;
+
+  .legend-card {
+    background: var(--white) !important;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    border-left: 4px solid #cbd5e1;
+
+    &.status-available { border-left-color: #10b981 !important; }   // Verde
+    &.status-unavailable { border-left-color: #94a3b8 !important; } // Gris
+    &.status-booked { border-left-color: #3b82f6 !important; }      // Azul
+
+    .status-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-dark) !important;
+      margin-bottom: 4px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      &.dot-available { background: #10b981; }
+      &.dot-unavailable { background: #94a3b8; }
+      &.dot-booked { background: #3b82f6; }
+    }
+
+    .status-desc {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--text-muted) !important;
+    }
+  }
 }
 
-.state-indicator {
-  background: var(--white);
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  
-  &.border-green { border-left: 4px solid #22c55e; }
-  &.border-gray { border-left: 4px solid #94a3b8; }
-  &.border-blue { border-left: 4px solid #3b82f6; }
-
-  .indicator-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-    h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-dark); }
-  }
-
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    &.dot-green { background: #22c55e; }
-    &.dot-gray { background: #94a3b8; }
-    &.dot-blue { background: #3b82f6; }
-  }
-
-  p { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
-}
-
+// --- TARJETA DE FILTROS ---
 .filters-card {
-  margin: 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01), 0 2px 4px -1px rgba(0,0,0,0.01);
-  background: var(--white);
+  margin: 0 0 24px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+  background: var(--white) !important;
+  --background: var(--white) !important;
   border: 1px solid #f1f5f9;
-  ion-card-content { padding: 20px; }
-  .filter-title { margin: 0 0 16px 0; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+
+  ion-card-content {
+    padding: 20px;
+    background: var(--white) !important;
+    color: var(--text-dark) !important;
+  }
+
+  h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+  }
 }
 
-.filters-grid {
+.filters-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  gap: 20px;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  label { font-size: 0.85rem; font-weight: 600; color: var(--text-dark); }
-  .custom-select, .custom-input {
-    width: 100%; height: 44px; padding: 0 12px; border-radius: 6px;
-    border: 1px solid #cbd5e1; background: var(--white); font-size: 0.9rem;
-    color: var(--text-dark); outline: none; transition: border-color 0.2s;
-    &:focus { border-color: #3b82f6; }
+
+  label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-dark) !important;
+  }
+
+  ion-select, .custom-date-input {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px;
+    color: var(--text-dark) !important;
+    font-size: 0.92rem;
+    height: 44px;
+    width: 100%;
+    
+    // Quitar estilos oscuros internos de Ionic
+    --color: var(--text-dark) !important;
   }
 }
 
-.empty-state-card {
-  margin: 0; border-radius: 8px; background: var(--white);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.01); border: 1px solid #f1f5f9;
-  .empty-content { padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-  .empty-icon { font-size: 3.5rem; color: #94a3b8; margin-bottom: 16px; }
-  h2 { margin: 0 0 8px 0; font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
-  p { margin: 0; font-size: 0.9rem; color: var(--text-muted); max-width: 400px; }
+// --- ESTADO VACÍO ---
+.management-empty-state {
+  background: var(--white) !important;
+  border-radius: 12px;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+
+  ion-icon {
+    font-size: 3.5rem;
+    color: #94a3b8;
+    margin-bottom: 16px;
+  }
+
+  h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-dark) !important;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-muted) !important;
+    max-width: 400px;
+  }
 }
 
+// --- CONTENEDOR Y GRILLA DE BLOQUES DE HORA ---
+.slots-management-container {
+  background: var(--white) !important;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+
+  .doctor-info-header {
+    margin-bottom: 20px;
+    h2 { font-size: 1.3rem; font-weight: 700; color: var(--text-dark) !important; margin: 0; }
+    p { font-size: 0.9rem; color: var(--text-muted) !important; margin: 4px 0 0 0; }
+  }
+}
+
+.hours-management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+
+  .hour-slot-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 8px;
+    border-radius: 10px;
+    border: 2px solid #cbd5e1;
+    cursor: pointer;
+    background: #ffffff !important;
+    transition: transform 0.1s ease;
+
+    .slot-time { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .slot-status-indicator { display: flex; align-items: center; gap: 4px; font-size: 0.78rem; font-weight: 600; }
+
+    &.slot-available {
+      background: #f0fdf4 !important;
+      border-color: #10b981 !important;
+      .slot-time, .slot-status-indicator { color: #14532d !important; }
+    }
+    &.slot-unavailable {
+      background: #f8fafc !important;
+      border-color: #94a3b8 !important;
+      .slot-time, .slot-status-indicator { color: #334155 !important; }
+    }
+    &.slot-booked {
+      background: #eff6ff !important;
+      border-color: #3b82f6 !important;
+      cursor: not-allowed;
+      .slot-time, .slot-status-indicator { color: #1e3a8a !important; }
+    }
+
+    &:not(.slot-booked):active { transform: scale(0.96); }
+  }
+}
+
+// --- ESTILOS PARA FORMULARIOS DE MODALES ---
+ion-modal {
+  --height: auto;
+  --max-height: 90%;
+  --border-radius: 16px;
+  --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
+
+  ion-toolbar {
+    --color: white !important;
+    font-weight: 600;
+  }
+
+  ion-item {
+    --padding-start: 0;
+    margin-bottom: 12px;
+    --background: #ffffff !important;
+    color: var(--text-dark) !important;
+  }
+}
+
+// --- RESPONSIVE / MEDIA QUERIES ---
 @media (max-width: 768px) {
-  .states-row, .filters-grid { grid-template-columns: 1fr; gap: 16px; }
+  .filters-layout { grid-template-columns: 1fr; gap: 16px; }
+  .status-legend-grid { grid-template-columns: 1fr; gap: 12px; }
+  .some-actions-bar { flex-direction: column; }
 }

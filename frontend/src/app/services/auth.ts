@@ -40,4 +40,21 @@ obtenerRol(uid: string) {
 return this.http.get<any>(`${this.urlApi}/obtener-rol/${uid}`);
 }
 
+//Gestion de medicos y horario
+  getMedicos() {
+    return this.http.get<any>(`${this.urlApi}/medicos`);
+  }
+
+  getGestionDisponibilidad(runMedico: string, fecha: string) {
+    return this.http.get<any>(`${this.urlApi}/gestion-disponibilidad?runMedico=${runMedico}&fecha=${fecha}`);
+  }
+
+  registrarMedico(medico: any) {
+    return this.http.post<any>(`${this.urlApi}/medicos`, medico);
+  }
+
+  configurarHorario(agenda: any) {
+    return this.http.post<any>(`${this.urlApi}/agenda-medica`, agenda);
+  }
+
 }
