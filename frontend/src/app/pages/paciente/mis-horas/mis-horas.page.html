@@ -8,14 +8,39 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="empty-state-container">
+  <div *ngIf="!cargando && horasPaciente.length === 0" class="empty-state-container">
     <div class="card-empty">
       <div class="icon-circle">
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
-      
       <h2>No tienes citas agendadas</h2>
       <p>Aún no has reservado ninguna hora médica</p>
     </div>
+  </div>
+
+  <div *ngIf="horasPaciente.length > 0">
+    <ion-card *ngFor="let cita of horasPaciente">
+      <ion-card-header>
+        <ion-card-title>Dr. {{ cita.NOMBRE_MEDICO }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p>
+          <ion-icon name="calendar-outline"></ion-icon>
+          {{ cita.FECHA }}
+        </p>
+        <p>
+          <ion-icon name="time-outline"></ion-icon>
+          {{ cita.HORA }}
+        </p>
+        <p>
+          <ion-icon name="person-outline"></ion-icon>
+          {{ cita.SERVICIO }}
+        </p>
+        <p>
+          🏥 Box de atención: <strong>{{ cita.NUM_BOX }}</strong>
+        </p>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>

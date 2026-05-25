@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core'; // Añadimos inject
+import { Component, inject } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Router } from '@angular/router'; // Importamos el Router
+import { Router } from '@angular/router'; 
 import { addIcons } from 'ionicons';
 import { documentTextOutline, happyOutline, thumbsUpOutline, informationCircleOutline } from 'ionicons/icons';
 
@@ -26,8 +26,15 @@ export class AgendarPage {
     });
   }
 
-  Servicio(service: string) {
-    console.log('Servicio seleccionado:', service);
+  /**
+   * Al hacer clic, guardamos el ID_SERV de Oracle y redirigimos a la vista correspondiente
+   */
+  Servicio(service: string, idServicio: number) {
+    console.log(`🎯 Servicio seleccionado: ${service} (ID_SERV: ${idServicio})`);
+    
+    // Almacenamos el ID numérico de la tabla CARTA_SERVICIO en el navegador
+    localStorage.setItem('id_servicio_seleccionado', idServicio.toString());
+
     switch (service) {
       case 'control-medico':
         this.router.navigate(['/control-medico']);
@@ -42,5 +49,4 @@ export class AgendarPage {
         console.warn('Ruta no encontrada:', service);
     }
   }
-
 }

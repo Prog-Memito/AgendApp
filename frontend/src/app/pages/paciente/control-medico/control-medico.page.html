@@ -70,11 +70,51 @@
         <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Disponible</div>
         
         <div class="hours-grid">
-          <ion-button fill="clear" class="hour-btn" *ngFor="let hora of medico.horas">
-            {{ hora }}
+          <ion-button fill="clear" class="hour-btn" *ngFor="let horario of medico.horas" (click)="abrirConfirmacion(medico, horario)">
+            {{ horario.hora || horario }}
           </ion-button>
         </div>
       </ion-card-content>
     </ion-card>
   </div>
+
+  <ion-modal 
+    [isOpen]="isConfirmModalOpen" 
+    (didDismiss)="isConfirmModalOpen = false"
+    [initialBreakpoint]="1"
+    [breakpoints]="[0, 1]"
+    class="custom-confirm-modal">
+    <ng-template>
+      <div class="ion-page">
+        <ion-header class="ion-no-border">
+          <ion-toolbar color="primary">
+            <ion-title>Confirmación de Reserva</ion-title>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding ion-text-center">
+          <div class="confirm-body" style="padding: 10px 0;">
+            <ion-icon name="information-circle-outline" color="primary" style="font-size: 56px; margin-bottom: 10px;"></ion-icon>
+            <h3 style="margin: 0 0 15px 0; font-weight: bold; color: #000000;">¿Deseas agendar esta cita?</h3>
+            
+            <div class="confirm-details" style="text-align: left; background: #f4f5f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Médico:</strong> {{ doctorSeleccionado }}</p>
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Fecha:</strong> {{ dateValue | date: 'dd/MM/yyyy' }}</p>
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Hora:</strong> {{ horaSeleccionada }} Hrs.</p>
+            </div>
+          </div>
+
+          <div class="modal-buttons-container" style="padding-bottom: 10px;">
+            <ion-button expand="block" color="success" style="margin-bottom: 10px; font-weight: bold;" (click)="confirmarYAgendar()">
+              Agendar Cita
+            </ion-button>
+            <ion-button expand="block" fill="clear" color="medium" (click)="isConfirmModalOpen = false">
+              Cambiar hora
+            </ion-button>
+          </div>
+        </ion-content>
+      </div>
+    </ng-template>
+  </ion-modal>
+
 </ion-content>
