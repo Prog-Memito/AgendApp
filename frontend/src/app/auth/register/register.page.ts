@@ -72,12 +72,33 @@ export class RegisterPage implements OnInit {
     event.target.value = this.rutValue;
   }
 
-  siguientePaso() {
-    if (this.rutValue.length >= 11) {
-      this.paso = 2;
-    } else {
-      this.mostrarToast('RUT incompleto o inválido', 'warning');
-    }
+  async siguientePaso() {
+  if (this.rutValue.length < 11) {
+    this.mostrarToast('RUT incompleto o inválido', 'warning');
+    return;
+  }
+
+  const loading = await this.loadingCtrl.create({
+    message: 'Verificando RUN...'
+  });
+  await loading.present();
+
+  this.http.get<any>(`http://localhost:3000/api/validar-run/${this.rutValue}`)
+    .subscribe({
+      next: async (res) => {
+        await loading.dismiss();
+        if (res.existe) {
+          this.paso = 2;
+        } else {
+          this.mostrarToast('El RUN no existe en nuestros registros', 'danger');
+        }
+      },
+      error: async (err) => {
+        await loading.dismiss();
+        console.error('Error validando RUN:', err);
+        this.mostrarToast('Error al validar RUN', 'danger');
+      }
+    });
   }
 
   volverPaso() {

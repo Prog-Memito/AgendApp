@@ -9,7 +9,7 @@
 
 <ion-content class="ion-padding">
   <div class="selection-header">
-    <h2>Psicólogo</h2>
+    <h2>Psicologo</h2>
     <ion-button fill="clear" size="small" (click)="cambiarTipo()">Cambiar</ion-button>
   </div>
 
@@ -23,7 +23,6 @@
         <ion-icon name="calendar-outline"></ion-icon>
       </div>
 
-      <!-- Añadimos el identificador #modalCalendario -->
       <ion-modal #modalCalendario trigger="open-modal" [keepContentsMounted]="true">
         <ng-template>
           <ion-datetime 
@@ -37,34 +36,85 @@
       </ion-modal>
       
       <p class="helper-text">Disponibilidad para los próximos 7 días</p>
+
+      <ion-button expand="block" mode="ios" class="ion-margin-top" [disabled]="!fechaSeleccionada" (click)="buscarHorasManual()">
+        <ion-icon name="search-outline" slot="start"></ion-icon>
+        Buscar Disponibilidad
+      </ion-button>
+
     </ion-card-content>
   </ion-card>
 
-  <!-- Estado Inicial -->
-  <div *ngIf="!fechaSeleccionada" class="empty-state">
+  <div *ngIf="!mostrarContenido" class="empty-state">
     <div class="empty-icon-container">
       <ion-icon name="calendar-outline"></ion-icon>
     </div>
-    <p>Selecciona una fecha para ver la disponibilidad</p>
+    <p>Selecciona una fecha y presiona buscar para ver la disponibilidad</p>
   </div>
 
-  <!-- Listado de Disponibilidad -->
-  <div *ngIf="fechaSeleccionada" class="availability-list">
-    <!-- Aquí van tus tarjetas de doctores (Dra. María, Dr. Carlos) -->
-    <ion-card class="doctor-card">
+  <div *ngIf="mostrarContenido && listaMedicos.length === 0" class="empty-state">
+    <div class="empty-icon-container">
+      <ion-icon name="information-circle-outline"></ion-icon>
+    </div>
+    <p>No hay horas disponibles para la fecha seleccionada.</p>
+  </div>
+
+  <div *ngIf="mostrarContenido && listaMedicos.length > 0" class="availability-list">
+    <ion-card class="doctor-card" *ngFor="let medico of listaMedicos">
       <ion-card-header>
-        <ion-card-title>Dra. María González</ion-card-title>
-        <ion-card-subtitle>Medicina General</ion-card-subtitle>
+        <ion-card-title><strong>{{ medico.nombreMedico }}</strong></ion-card-title>
+        <ion-card-subtitle>Psicologo</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <div class="day-label">{{ fechaFormateada }}</div>
-        <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Tarde</div>
+        <div class="shift-label"><ion-icon name="moon-outline"></ion-icon> Disponible</div>
+        
         <div class="hours-grid">
-          <ion-button fill="clear" class="hour-btn">15:00</ion-button>
-          <ion-button fill="clear" class="hour-btn">16:00</ion-button>
-          <ion-button fill="clear" class="hour-btn">17:00</ion-button>
+          <ion-button fill="clear" class="hour-btn" *ngFor="let horario of medico.horas" (click)="abrirConfirmacion(medico, horario)">
+            {{ horario.hora || horario }}
+          </ion-button>
         </div>
       </ion-card-content>
     </ion-card>
   </div>
+
+  <ion-modal 
+    [isOpen]="isConfirmModalOpen" 
+    (didDismiss)="isConfirmModalOpen = false"
+    [initialBreakpoint]="1"
+    [breakpoints]="[0, 1]"
+    class="custom-confirm-modal">
+    <ng-template>
+      <div class="ion-page">
+        <ion-header class="ion-no-border">
+          <ion-toolbar color="primary">
+            <ion-title>Confirmación de Reserva</ion-title>
+          </ion-toolbar>
+        </ion-header>
+
+        <ion-content class="ion-padding ion-text-center">
+          <div class="confirm-body" style="padding: 10px 0;">
+            <ion-icon name="information-circle-outline" color="primary" style="font-size: 56px; margin-bottom: 10px;"></ion-icon>
+            <h3 style="margin: 0 0 15px 0; font-weight: bold; color: #000000;">¿Deseas agendar esta cita?</h3>
+            
+            <div class="confirm-details" style="text-align: left; background: #f4f5f8; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Médico:</strong> {{ doctorSeleccionado }}</p>
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Fecha:</strong> {{ dateValue | date: 'dd/MM/yyyy' }}</p>
+              <p style="margin: 5px 0; color: #333333; font-size: 16px;"><strong>Hora:</strong> {{ horaSeleccionada }} Hrs.</p>
+            </div>
+          </div>
+
+          <div class="modal-buttons-container" style="padding-bottom: 10px;">
+            <ion-button expand="block" color="success" style="margin-bottom: 10px; font-weight: bold;" (click)="confirmarYAgendar()">
+              Agendar Cita
+            </ion-button>
+            <ion-button expand="block" fill="clear" color="medium" (click)="isConfirmModalOpen = false">
+              Cambiar hora
+            </ion-button>
+          </div>
+        </ion-content>
+      </div>
+    </ng-template>
+  </ion-modal>
+
 </ion-content>
