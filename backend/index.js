@@ -347,15 +347,16 @@ app.get('/api/disponibilidad-medica/:fecha/:servicio', async (req, res) => {
             SELECT
                 A.ID_HORARIO,
                 M.NOMB_MED || ' ' || M.APELL_PAT_MED AS NOMBRE_PROFESIONAL,
-                TO_CHAR(A.HORA_INI, 'HH24:MI') AS HORA_COMPLETA
+                TO_CHAR(A.HORA, 'HH24:MI') AS HORA_COMPLETA
             FROM AGEND_MED A
             INNER JOIN MEDICO M 
                 ON REPLACE(REPLACE(A.MEDICO_RUN_MED, '.', ''), '-', '') = REPLACE(REPLACE(M.RUN_MED, '.', ''), '-', '')
-            WHERE TRUNC(A.DIA_SEMANA) = TO_DATE(:fecha, 'YYYY-MM-DD')
+            WHERE TRUNC(A.DIA) = TO_DATE(:fecha, 'YYYY-MM-DD')
             AND NOT EXISTS (
                 SELECT 1
                 FROM CITA_MEDICA C
                 WHERE C.AGEND_MED_ID_HORARIO = A.ID_HORARIO
+                AND C.BLOQ_PARC_CITA_ID_BLOQ IS NULL
             )
             ORDER BY NOMBRE_PROFESIONAL, HORA_COMPLETA
         `;
@@ -456,6 +457,27 @@ app.post('/api/registrar-cita', async (req, res) => {
 
         const v_run = resPac.rows[0].RUN_PAC;
 
+        // VALIDAR SI YA TIENE UNA CITA FUTURA
+        const sqlValidarCitaExistente = `
+            SELECT ID_CITA, TO_CHAR(HORA, 'DD/MM/YYYY HH24:MI') AS FECHA_HORA
+            FROM CITA_MEDICA
+            WHERE PACIENTE_RUN_PAC = :runPaciente
+            AND HORA >= SYSDATE
+        `;
+
+        const resCitaExistente = await connection.execute(
+            sqlValidarCitaExistente,
+            { runPaciente: v_run },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        if (resCitaExistente.rows.length > 0) {
+            return res.status(400).json({
+                success: false,
+                error: `Ya tienes una cita pendiente para ${resCitaExistente.rows[0].FECHA_HORA}`
+            });
+        }
+
         // Buscar boxes ocupados
         const sqlBoxesOcupados = `
             SELECT BOXES_ID_BOX
@@ -506,7 +528,7 @@ app.post('/api/registrar-cita', async (req, res) => {
                 PACIENTE_RUN_PAC,
                 CARTA_SERVICIO_ID_SERV,
                 AGEND_MED_ID_HORARIO,
-                BLOQ_PARC_AGEND_ID_BLOQ,
+                BLOQ_PARC_CITA_ID_BLOQ,
                 BOXES_ID_BOX
             ) VALUES (
                 :idCita,
@@ -576,8 +598,10 @@ app.get('/api/mis-horas/:uid', async (req, res) => {
         // Consulta SQL estructurada con la integración de BOXES
         const sql = `
             SELECT
+                C.ID_CITA,
                 TO_CHAR(C.FECHA, 'DD/MM/YYYY') AS FECHA,
                 TO_CHAR(C.HORA, 'HH24:MI') AS HORA,
+                TO_CHAR(C.HORA, 'YYYY-MM-DD"T"HH24:MI:SS') AS FECHA_HORA,
                 M.NOMB_MED || ' ' || M.APELL_PAT_MED AS NOMBRE_MEDICO,
                 B.NUMB_BOX AS NUM_BOX,
                 CS.NOMB_SERV AS SERVICIO
@@ -592,7 +616,10 @@ app.get('/api/mis-horas/:uid', async (req, res) => {
                 ON B.ID_BOX = C.BOXES_ID_BOX
             INNER JOIN CARTA_SERVICIO CS 
                 ON CS.ID_SERV = C.CARTA_SERVICIO_ID_SERV
+            INNER JOIN CARTA_SERVICIO CS
+                ON CS.ID_SERV = C.CARTA_SERVICIO_ID_SERV
             WHERE P.FIREBASE_UID = :uidFirebase
+            AND C.BLOQ_PARC_CITA_ID_BLOQ IS NULL
             ORDER BY C.FECHA DESC, C.HORA DESC
         `;
 
@@ -618,6 +645,87 @@ app.get('/api/mis-horas/:uid', async (req, res) => {
                 console.error("Error cerrando conexión:", e);
             }
         }
+    }
+});
+
+app.post('/api/cancelar-cita', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const { idCita } = req.body;
+
+        // 1. Crear registro de cancelación obteniendo el ID de la secuencia
+        const bloque = await connection.execute(
+            `
+            INSERT INTO BLOQ_PARC_CITA (ID_BLOQ, MOTIVO_BLOQ)
+            VALUES (SEQ_BLOQ_PARC_CITA.NEXTVAL, 'Cancelación')
+            RETURNING ID_BLOQ INTO :id
+            `,
+            {
+                id: { dir: oracledb.BIND_OUT, type: oracledb.NUMBER }
+            },
+            { autoCommit: false }
+        );
+
+        const idBloq = bloque.outBinds.id[0];
+        console.log("Bloqueo generado:", idBloq);
+
+        // 2. Eliminar físicamente la cita médica
+        const resultadoDelete = await connection.execute(
+            `
+            DELETE FROM CITA_MEDICA
+            WHERE ID_CITA = :idCita
+            `,
+            { idCita }
+        );
+
+        console.log("Citas eliminadas:", resultadoDelete.rowsAffected);
+
+        // 3. Confirmar la transacción atómica
+        await connection.commit();
+
+        return res.json({
+            success: true,
+            mensaje: 'Cita cancelada correctamente'
+        });
+
+    } catch (err) {
+        // Ejecutar Rollback seguro en caso de cualquier falla interna
+        if (connection) {
+            try {
+                await connection.rollback();
+            } catch (rollbackErr) {
+                console.error("Error al ejecutar rollback:", rollbackErr);
+            }
+        }
+
+        console.error("❌ Error en cancelar-cita:", err);
+        return res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error("Error cerrando conexión:", closeErr);
+            }
+        }
+    }
+});
+
+app.post('/api/confirmar-asistencia', async (req, res) => {
+    let connection;
+
+    try {
+        // En un futuro, aquí puedes agregar la lógica para actualizar el estado en Oracle si lo requieres
+        return res.json({ success: true });
+        
+    } catch (err) {
+        console.error("❌ Error en confirmar-asistencia:", err);
+        return res.status(500).json({ error: err.message });
     }
 });
 
