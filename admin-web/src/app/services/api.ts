@@ -21,4 +21,11 @@ export class Api {
     `${this.url}/dashboard/resumen`
   );
   }
+
+  obtenerMedicos() {
+  return this.http.get(
+    `${this.url}/medicos`
+  );
+  }
+  
 }
