@@ -3,9 +3,11 @@
 "version": "1.0.0",
 "description": "Script de instalación automatizada para AgendApp",
 "scripts": {
-"instalar": "npm install --prefix backend && npm install --prefix frontend",
-"limpiar": "rm -rf backend/node_modules frontend/node_modules",
-"backend": "cd backend && node index.js",
-"frontend": "cd frontend && ionic serve"
+    "instalar": "npm install --prefix backend && npm install --prefix frontend && npm install --prefix admin-web",
+    "limpiar": "rmdir /s /q backend\\node_modules && rmdir /s /q frontend\\node_modules && rmdir /s /q admin-web\\node_modules",
+    "backend": "cd backend && node index.js",
+    "frontend": "cd frontend && ionic serve",
+    "admin": "cd admin-web && ng serve",
+    "admin-web": "cd admin-web && ng serve"
 }
 }

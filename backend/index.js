@@ -980,4 +980,90 @@ app.get('/api/estadisticas-some', async (req, res) => {
     }
 });
 
+//
+app.get('/api/admin/:uid', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const { uid } = req.params;
+
+        // Buscar datos esenciales del personal del SOME por su UID de Firebase
+        const result = await connection.execute(
+            `
+            SELECT RUN_SOME, NOMB_SOME, APELL_PAT_SOME, EMAIL
+            FROM PERS_SOME
+            WHERE FIREBASE_UID = :uid
+            `,
+            { uid },
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        // 1. Validar si el administrador existe
+        if (!result.rows.length) {
+            return res.status(404).json({
+                success: false,
+                message: 'Administrador no encontrado'
+            });
+        }
+
+        // 2. Retorno exitoso mapeando directamente la primera fila
+        return res.json({
+            success: true,
+            admin: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error("❌ Error en obtener admin por UID:", err);
+        return res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error("Error al cerrar conexión en obtener admin:", closeErr);
+            }
+        }
+    }
+});
+
+//
+app.get('/api/dashboard/resumen', async (req, res) => {
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        // Consulta unificada en DUAL para obtener los contadores clave del dashboard
+        const resultado = await connection.execute(
+            `
+            SELECT
+                (SELECT COUNT(*) FROM CITA_MEDICA) AS TOTAL_CITAS,
+                (SELECT COUNT(*) FROM PACIENTE) AS TOTAL_PACIENTES,
+                (SELECT COUNT(*) FROM MEDICO) AS TOTAL_MEDICOS,
+                (SELECT COUNT(*) FROM BLOQ_PARC_CITA) AS TOTAL_CANCELACIONES
+            FROM DUAL
+            `,
+            [],
+            { outFormat: oracledb.OUT_FORMAT_OBJECT }
+        );
+
+        return res.json(resultado.rows[0]);
+
+    } catch (err) {
+        console.error("❌ Error en dashboard/resumen:", err);
+        return res.status(500).json({ error: err.message });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (closeErr) {
+                console.error("Error al cerrar conexión en dashboard/resumen:", closeErr);
+            }
+        }
+    }
+});
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));

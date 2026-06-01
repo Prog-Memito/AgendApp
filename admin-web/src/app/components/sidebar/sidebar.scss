@@ -1,0 +1,47 @@
+.sidebar {
+width: 250px;
+height: 100vh;
+
+background: #1e293b;
+color: white;
+
+position: fixed;
+left: 0;
+top: 0;
+
+display: flex;
+flex-direction: column;
+}
+
+.logo {
+padding: 24px;
+text-align: center;
+border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.logo h2 {
+margin: 0;
+}
+
+.logo span {
+color: #94a3b8;
+}
+
+nav {
+display: flex;
+flex-direction: column;
+padding: 20px;
+}
+
+nav a {
+color: white;
+text-decoration: none;
+padding: 12px;
+border-radius: 8px;
+margin-bottom: 8px;
+transition: .2s;
+}
+
+nav a:hover {
+background: rgba(255,255,255,.1);
+}
