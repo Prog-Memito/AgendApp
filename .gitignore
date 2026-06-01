@@ -1,17 +1,125 @@
-# Dependencias (Cubre ambas carpetas)
+# ==================================================
+# DEPENDENCIAS
+# ==================================================
 **/node_modules/
 
-# Frontend (Ionic/Angular)
-frontend/.angular/
-frontend/www/
-frontend/dist/
-frontend/.ionic/
+# ==================================================
+# ANGULAR / IONIC
+# ==================================================
+**/.angular/
+**/.angular/cache/
+**/dist/
+**/out-tsc/
+**/coverage/
 
-# Backend (Node/Oracle)
-backend/.env
-backend/logs/
+# Ionic
+**/.ionic/
+**/www/
 
-# Editores y Sistema
-.vscode/
+# ==================================================
+# VARIABLES DE ENTORNO
+# ==================================================
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# ==================================================
+# LOGS
+# ==================================================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+firebase-debug.log*
+
+# ==================================================
+# CACHE
+# ==================================================
+**/.cache/
+.sass-cache/
+
+# ==================================================
+# FIREBASE
+# ==================================================
+.firebase/
+firebase-debug.log
+
+# ==================================================
+# IDEs Y EDITORES
+# ==================================================
+
+# VS Code
+**/.vscode/
+
+# JetBrains
+.idea/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Cloud9
+.c9/
+
+# Historiales
+.history/
+
+# Archivos de lanzamiento
+*.launch
+
+# ==================================================
+# ARCHIVOS TEMPORALES
+# ==================================================
+*.tmp
+*.temp
+*.bak
+*.swp
+/connect.lock
+
+# ==================================================
+# TESTING
+# ==================================================
+__screenshots__/
+testem.log
+
+# ==================================================
+# SISTEMA OPERATIVO
+# ==================================================
+
+# macOS
 .DS_Store
+
+# Windows
 Thumbs.db
+Desktop.ini
+
+# ==================================================
+# ARCHIVOS GENERADOS
+# ==================================================
+
+# Reportes
+*.coverage
+coverage-final.json
+
+# Compilaciones
+*.tsbuildinfo
+
+# ==================================================
+# ORACLE / BACKEND
+# ==================================================
+**/logs/
+
+# ==================================================
+# OTROS
+# ==================================================
+
+# Archivos comprimidos temporales
+*.zip
+*.rar
+*.7z
+
+# Certificados locales
+*.pem
+*.key

@@ -40,6 +40,20 @@
         <p>
           🏥 Box de atención: <strong>{{ cita.NUM_BOX }}</strong>
         </p>
+        <div class="acciones-cita">
+          <ion-button
+            color="danger"
+            fill="outline"
+            (click)="cancelarReserva(cita)">
+            Cancelar Reserva
+          </ion-button>
+          <ion-button
+            *ngIf="puedeConfirmar(cita)"
+            color="success"
+            (click)="confirmarAsistencia(cita)">
+            Confirmar Asistencia
+          </ion-button>
+        </div>
       </ion-card-content>
     </ion-card>
   </div>

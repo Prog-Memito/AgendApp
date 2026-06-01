@@ -65,6 +65,48 @@ export class MisHorasPage implements OnInit {
       });
   }
 
+  puedeConfirmar(cita: any): boolean {
+  const fechaCita = new Date(cita.FECHA_HORA);
+
+  const diferenciaHoras =
+    (fechaCita.getTime() - Date.now()) /
+    (1000 * 60 * 60);
+
+  console.log(
+    cita.FECHA_HORA,
+    diferenciaHoras
+  );
+
+  return diferenciaHoras <= 24 && diferenciaHoras > 0;
+}
+
+confirmarAsistencia(cita: any) {
+  this.http.post('http://localhost:3000/api/confirmar-asistencia', {
+    idCita: cita.ID_CITA
+  }).subscribe({
+    next: () => {
+      this.mostrarToast('Asistencia confirmada', 'success');
+    },
+    error: () => {
+      this.mostrarToast('No se pudo confirmar', 'danger');
+    }
+  });
+}
+
+cancelarReserva(cita: any) {
+  this.http.post('http://localhost:3000/api/cancelar-cita', {
+    idCita: cita.ID_CITA
+  }).subscribe({
+    next: () => {
+      this.mostrarToast('Reserva cancelada', 'success');
+      this.cargarHorasPaciente();
+    },
+    error: () => {
+      this.mostrarToast('No se pudo cancelar', 'danger');
+    }
+  });
+}
+
   async mostrarToast(mensaje: string, color: string) {
     const toast = await this.toastCtrl.create({
       message: mensaje,
