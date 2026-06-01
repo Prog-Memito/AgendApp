@@ -1066,4 +1066,50 @@ app.get('/api/dashboard/resumen', async (req, res) => {
         }
     }
 });
+
+//
+app.get('/api/medicos', async (req, res) => {
+
+    let connection;
+
+    try {
+
+        connection = await oracledb.getConnection(dbConfig);
+
+        const result = await connection.execute(
+            `
+            SELECT
+                RUN_MED,
+                NOMB_MED || ' ' ||
+                APELL_PAT_MED || ' ' ||
+                APELL_MAT_MED AS NOMBRE_COMPLETO
+            FROM MEDICO
+            ORDER BY NOMB_MED
+            `,
+            [],
+            {
+                outFormat: oracledb.OUT_FORMAT_OBJECT
+            }
+        );
+
+        res.json(result.rows);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+
+    } finally {
+
+        if(connection){
+            await connection.close();
+        }
+
+    }
+
+});
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));

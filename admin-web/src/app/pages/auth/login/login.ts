@@ -33,7 +33,7 @@ export class Login {
         console.log('Respuesta backend:', resp);
         if (resp.rol === 'SOME') {
           localStorage.setItem('uid', uid);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/inicio']);
         } else {
           alert('No posee permisos para acceder al panel administrativo');
         }
