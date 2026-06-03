@@ -27,5 +27,13 @@ export class Api {
     `${this.url}/medicos`
   );
   }
+
+  generarHorarios(datos: any) {
+  return this.http.post(
+    `${this.url}/horarios/generar`,
+    datos
+  );
+  }
+
   
 }

@@ -31,4 +31,5 @@ ionic serve
 # Para iniciar el panel administrativo web usar:
 
 cd admin-web
+npm install --legacy-peer-deps
 ng serve

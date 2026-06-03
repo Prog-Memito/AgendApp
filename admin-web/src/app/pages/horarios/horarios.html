@@ -1,3 +1,53 @@
 <app-sidebar></app-sidebar>
 
-<p>horarios works!</p>
+<div class="container">
+
+<h1>Generar Horarios Médicos</h1>
+
+<div class="formulario">
+
+    <label>Médico</label>
+
+    <select [(ngModel)]="medicoSeleccionado">
+
+    <option value="">
+        Seleccione un médico
+    </option>
+
+    <option
+        *ngFor="let medico of medicos"
+        [value]="medico.RUN_MED">
+
+        {{ medico.NOMBRE_COMPLETO }}
+
+    </option>
+
+    </select>
+
+    <label>Fecha</label>
+    <input type="date" [(ngModel)]="fecha">
+
+    <label>Hora Inicio</label>
+    <input type="time" [(ngModel)]="horaInicio">
+
+    <label>Hora Fin</label>
+    <input type="time" [(ngModel)]="horaFin">
+
+    <label>Duración</label>
+
+    <select [(ngModel)]="duracion">
+
+    <option [value]="15">15 minutos</option>
+    <option [value]="30">30 minutos</option>
+    <option [value]="45">45 minutos</option>
+    <option [value]="60">60 minutos</option>
+
+    </select>
+
+    <button (click)="generarHorarios()">
+        Generar Horarios
+    </button>
+
+</div>
+
+</div>

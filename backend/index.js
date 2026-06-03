@@ -1112,4 +1112,118 @@ app.get('/api/medicos', async (req, res) => {
     }
 
 });
+
+//
+app.post('/api/horarios/generar', async (req, res) => {
+
+    const {
+        medico,
+        fecha,
+        horaInicio,
+        horaFin,
+        duracion
+    } = req.body;
+
+    let connection;
+
+    try {
+
+        connection = await oracledb.getConnection(dbConfig);
+
+        const inicio = new Date(`${fecha}T${horaInicio}`);
+        const fin = new Date(`${fecha}T${horaFin}`);
+
+        let horariosGenerados = 0;
+
+        while (inicio < fin) {
+
+            const horaString =
+                inicio.getHours().toString().padStart(2, '0')
+                + ':'
+                +
+                inicio.getMinutes().toString().padStart(2, '0');
+
+            // Verificar si ya existe
+            const existe = await connection.execute(
+                `
+                SELECT ID_HORARIO
+                FROM AGEND_MED
+                WHERE MEDICO_RUN_MED = :medico
+                AND DIA = TO_DATE(:fecha,'YYYY-MM-DD')
+                AND TO_CHAR(HORA,'HH24:MI') = :hora
+                `,
+                {
+                    medico,
+                    fecha,
+                    hora: horaString
+                },
+                {
+                    outFormat: oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+
+            if (existe.rows.length === 0) {
+
+                await connection.execute(
+                    `
+                    INSERT INTO AGEND_MED
+                    (
+                        DIA,
+                        HORA,
+                        MEDICO_RUN_MED
+                    )
+                    VALUES
+                    (
+                        TO_DATE(:fecha,'YYYY-MM-DD'),
+                        TO_DATE(:hora,'HH24:MI'),
+                        :medico
+                    )
+                    `,
+                    {
+                        fecha,
+                        hora: horaString,
+                        medico
+                    },
+                    {
+                        autoCommit: false
+                    }
+                );
+
+                horariosGenerados++;
+
+            }
+
+            inicio.setMinutes(
+                inicio.getMinutes() + Number(duracion)
+            );
+
+        }
+
+        await connection.commit();
+
+        res.json({
+            success: true,
+            horariosGenerados
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+
+    } finally {
+
+        if (connection) {
+            await connection.close();
+        }
+
+    }
+
+});
+
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
