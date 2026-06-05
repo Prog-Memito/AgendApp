@@ -1324,4 +1324,169 @@ app.put('/api/medicos/estado/:run', async (req, res) => {
     }
 });
 
+//
+app.get('/api/pacientes', async (req, res) => {
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        const result = await connection.execute(
+            `
+            SELECT
+                P.RUN_PAC,
+                P.NOMB_PAC || ' ' ||
+                P.APELL_PAT_PAC || ' ' ||
+                P.APELL_MAT_PAC AS NOMBRE_COMPLETO,
+                p.EMAIL,
+                P.FECH_NAC,
+                P.FONO_PAC,
+                P.SEXO,
+                P.DIRECC,
+                E.ESTADO
+            FROM PACIENTE P
+            INNER JOIN ESTADO E
+                ON E.ID_ESTADO = P.ESTADO_ID_ESTADO
+            ORDER BY P.NOMB_PAC
+            `,
+            [],
+            {
+                outFormat: oracledb.OUT_FORMAT_OBJECT
+            }
+        );
+        res.json(result.rows);
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    } finally {
+        if(connection){
+            await connection.close();
+        }
+    }
+});
+
+//
+app.post('/api/pacientes', async (req, res) => {
+    const {
+        run,
+        nombre,
+        apellidoPat,
+        apellidoMat,
+        fechaNacimiento,
+        telefono,
+        direccion,
+        sexo
+    } = req.body;
+    let connection;
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        console.log(req.body);
+        console.log(typeof fechaNacimiento);
+        console.log(fechaNacimiento);
+        console.log(new Date(fechaNacimiento));
+        await connection.execute(
+            `
+            INSERT INTO PACIENTE
+            (
+                RUN_PAC,
+                NOMB_PAC,
+                APELL_PAT_PAC,
+                APELL_MAT_PAC,
+                FECH_NAC,
+                FONO_PAC,
+                DIRECC,
+                SEXO,
+                USUARIO_ID_TP_USER,
+                ESTADO_ID_ESTADO
+            )
+            VALUES
+            (
+                :run,
+                :nombre,
+                :apellidoPat,
+                :apellidoMat,
+                :fechaNacimiento,
+                :telefono,
+                :direccion,
+                :sexo,
+                3,
+                2
+            )
+            `,
+            {
+                run,
+                nombre,
+                apellidoPat,
+                apellidoMat,
+                fechaNacimiento: new Date(fechaNacimiento),
+                telefono,
+                direccion,
+                sexo
+            },
+            {
+                autoCommit: true
+            }
+        );
+        res.json({
+            success: true
+        });
+    } catch(error) {
+        console.log('DATOS RECIBIDOS:', req.body);
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    } finally {
+        if(connection){
+            await connection.close();
+        }
+    }
+});
+
+//
+app.put('/api/pacientes/estado/:run', async (req, res) => {
+    const { run } = req.params;
+    const { estado } = req.body;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+
+        await connection.execute(
+            `
+            UPDATE PACIENTE
+            SET ESTADO_ID_ESTADO = :estado
+            WHERE RUN_PAC = :run
+            `,
+            {
+                estado,
+                run
+            },
+            {
+                autoCommit: true
+            }
+        );
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    } finally {
+        if (connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    }
+});
+
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));
