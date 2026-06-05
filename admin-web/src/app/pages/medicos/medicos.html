@@ -1,0 +1,97 @@
+<app-sidebar></app-sidebar>
+
+<div class="container">
+
+    <h1>Médicos</h1>
+    <button (click)="mostrarFormulario = !mostrarFormulario">
+        Nuevo Médico
+    </button>
+    <table>
+        <thead>
+            <tr>
+                <th>RUN</th>
+                <th>Nombre Completo</th>
+                <th>Fecha Nacimiento</th>
+                <th>Sexo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let medico of medicos">
+                <td>{{ medico.RUN_MED }}</td>
+                <td>
+                    {{ medico.NOMBRE_COMPLETO }}
+                </td>
+                <td>
+                    {{ medico.FECH_NAC | date:'dd/MM/yyyy' }}
+                </td>
+                <td>
+                    {{ medico.SEXO }}
+                </td>
+                <td>
+                    {{ medico.ESTADO }}
+                </td>
+                <td>
+                    <input
+                        type="checkbox"
+                        [checked]="medico.ESTADO === 'ACTIVO'"
+                        (change)="cambiarEstado(medico)">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div *ngIf="mostrarFormulario">
+
+    <h2>Nuevo Médico</h2>
+
+    <input
+        type="text"
+        placeholder="12.345.678-K"
+        maxlength="12"
+        [(ngModel)]="nuevoRun"
+        (input)="formatearRun($event)">
+
+    <input
+        type="text"
+        placeholder="Nombre"
+        [(ngModel)]="nuevoNombre">
+
+    <input
+        type="text"
+        placeholder="Apellido Paterno"
+        [(ngModel)]="nuevoApellidoPat">
+
+    <input
+        type="text"
+        placeholder="Apellido Materno"
+        [(ngModel)]="nuevoApellidoMat">
+
+    <input
+        type="date"
+        [(ngModel)]="nuevoFechaNacimiento">
+
+    <select
+        [(ngModel)]="nuevoSexo">
+
+        <option value="">
+            Seleccionar
+        </option>
+
+        <option value="M">
+            Masculino
+        </option>
+
+        <option value="F">
+            Femenino
+        </option>
+
+    </select>
+
+    <button (click)="guardarMedico()">
+        Guardar
+    </button>
+
+</div>
+</div>
