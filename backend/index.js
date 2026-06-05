@@ -588,6 +588,7 @@ app.post('/api/registrar-cita', async (req, res) => {
     }
 });
 
+//
 app.get('/api/mis-horas/:uid', async (req, res) => {
     let connection;
 
@@ -648,6 +649,7 @@ app.get('/api/mis-horas/:uid', async (req, res) => {
     }
 });
 
+//
 app.post('/api/cancelar-cita', async (req, res) => {
     let connection;
 
@@ -716,6 +718,7 @@ app.post('/api/cancelar-cita', async (req, res) => {
     }
 });
 
+//
 app.post('/api/confirmar-asistencia', async (req, res) => {
     let connection;
 
@@ -1073,44 +1076,110 @@ app.get('/api/medicos', async (req, res) => {
     let connection;
 
     try {
-
         connection = await oracledb.getConnection(dbConfig);
 
         const result = await connection.execute(
             `
             SELECT
-                RUN_MED,
-                NOMB_MED || ' ' ||
-                APELL_PAT_MED || ' ' ||
-                APELL_MAT_MED AS NOMBRE_COMPLETO
-            FROM MEDICO
-            ORDER BY NOMB_MED
+                M.RUN_MED,
+                M.NOMB_MED || ' ' ||
+                M.APELL_PAT_MED || ' ' ||
+                M.APELL_MAT_MED AS NOMBRE_COMPLETO,
+                M.FECH_NAC,
+                M.SEXO,
+                E.ESTADO
+            FROM MEDICO M
+            INNER JOIN ESTADO E
+                ON E.ID_ESTADO = M.ESTADO_ID_ESTADO
+            ORDER BY M.NOMB_MED
             `,
             [],
             {
                 outFormat: oracledb.OUT_FORMAT_OBJECT
             }
         );
-
         res.json(result.rows);
-
     } catch (error) {
-
         console.error(error);
 
         res.status(500).json({
             success: false,
             error: error.message
         });
-
     } finally {
-
         if(connection){
             await connection.close();
         }
-
     }
 
+});
+
+//
+app.post('/api/medicos', async (req, res) => {
+
+    const {
+        run,
+        nombre,
+        apellidoPat,
+        apellidoMat,
+        fechaNacimiento,
+        sexo
+    } = req.body;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `
+            INSERT INTO MEDICO
+            (
+                RUN_MED,
+                NOMB_MED,
+                APELL_PAT_MED,
+                APELL_MAT_MED,
+                FECH_NAC,
+                SEXO,
+                ESTADO_ID_ESTADO
+            )
+            VALUES
+            (
+                :run,
+                :nombre,
+                :apellidoPat,
+                :apellidoMat,
+                TO_DATE(:fechaNacimiento,'YYYY-MM-DD'),
+                :sexo,
+                2
+            )
+            `,
+            {
+                run,
+                nombre,
+                apellidoPat,
+                apellidoMat,
+                fechaNacimiento,
+                sexo
+            },
+            {
+                autoCommit: true
+            }
+        );
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    } finally {
+        if(connection){
+            await connection.close();
+        }
+    }
 });
 
 //
@@ -1163,7 +1232,6 @@ app.post('/api/horarios/generar', async (req, res) => {
             );
 
             if (existe.rows.length === 0) {
-
                 await connection.execute(
                     `
                     INSERT INTO AGEND_MED
@@ -1188,15 +1256,11 @@ app.post('/api/horarios/generar', async (req, res) => {
                         autoCommit: false
                     }
                 );
-
                 horariosGenerados++;
-
             }
-
             inicio.setMinutes(
                 inicio.getMinutes() + Number(duracion)
             );
-
         }
 
         await connection.commit();
@@ -1205,25 +1269,59 @@ app.post('/api/horarios/generar', async (req, res) => {
             success: true,
             horariosGenerados
         });
-
     } catch (error) {
-
         console.error(error);
 
         res.status(500).json({
             success: false,
             error: error.message
         });
-
     } finally {
-
         if (connection) {
             await connection.close();
         }
-
     }
 
 });
 
+//
+app.put('/api/medicos/estado/:run', async (req, res) => {
+    const { run } = req.params;
+    const { estado } = req.body;
+
+    let connection;
+
+    try {
+        connection = await oracledb.getConnection(dbConfig);
+        await connection.execute(
+            `
+            UPDATE MEDICO
+            SET ESTADO_ID_ESTADO = :estado
+            WHERE RUN_MED = :run
+            `,
+            {
+                estado,
+                run
+            },
+            {
+                autoCommit: true
+            }
+        );
+        res.json({
+            success: true
+        });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    } finally {
+        if(connection){
+            await connection.close();
+        }
+    }
+});
 
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));

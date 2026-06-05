@@ -14,26 +14,41 @@ export class Api {
     return this.http.get(
       `${this.url}/obtener-rol/${uid}`
     );
-  }
+}
 
   obtenerResumen() {
   return this.http.get(
     `${this.url}/dashboard/resumen`
   );
-  }
+}
 
   obtenerMedicos() {
   return this.http.get(
     `${this.url}/medicos`
   );
-  }
+}
+
+  crearMedico(datos: any) {
+  return this.http.post(
+    `${this.url}/medicos`,
+    datos
+  );
+}
 
   generarHorarios(datos: any) {
   return this.http.post(
     `${this.url}/horarios/generar`,
     datos
   );
-  }
+}
 
-  
+  cambiarEstado(run: string, estado: number) {
+  return this.http.put(
+    `${this.url}/medicos/estado/${run}`,
+    {
+      estado
+    }
+  );
+}
+
 }
