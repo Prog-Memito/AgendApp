@@ -51,4 +51,26 @@ export class Api {
   );
 }
 
+obtenerPacientes() {
+  return this.http.get(
+    `${this.url}/pacientes`
+  );
+}
+
+crearPaciente(datos: any) {
+  return this.http.post(
+    `${this.url}/pacientes`,
+    datos
+  );
+}
+
+cambiarEstadoPaciente(run: string, estado: number) {
+  return this.http.put(
+    `${this.url}/pacientes/estado/${run}`,
+    {
+      estado
+    }
+  );
+}
+
 }

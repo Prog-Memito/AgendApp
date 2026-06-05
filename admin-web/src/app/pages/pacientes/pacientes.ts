@@ -1,25 +1,25 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 //Llama a la api 
 import { Api } from '../../services/api';
 //LLama al Sidebar lateral 
 import { Sidebar } from '../../components/sidebar/sidebar';
 
 @Component({
-  selector: 'app-medicos',
+  selector: 'app-pacientes',
   standalone: true,
   imports: [ Sidebar, CommonModule, FormsModule ],
-  templateUrl: './medicos.html',
-  styleUrl: './medicos.scss',
+  templateUrl: './pacientes.html',
+  styleUrl: './pacientes.scss',
 })
-
-export class Medicos implements OnInit {
+export class Pacientes implements OnInit {
 
   private api = inject(Api);
   private cdr = inject(ChangeDetectorRef);
 
-  medicos: any[] = [];
+  pacientes: any[] = [];
 
   mostrarFormulario = false;
 
@@ -28,17 +28,19 @@ export class Medicos implements OnInit {
   nuevoApellidoPat = '';
   nuevoApellidoMat = '';
   nuevoFechaNacimiento = '';
+  nuevoTelefono = '';
   nuevoSexo = '';
+  nuevoDireccion = '';
 
   ngOnInit() {
-    this.cargarMedicos();
+    this.cargarPacientes();
   }
 
-  cargarMedicos() {
-    this.api.obtenerMedicos().subscribe({
+  cargarPacientes() {
+    this.api.obtenerPacientes().subscribe({
       next: (resp: any) => {
         console.log(resp);
-        this.medicos = resp;
+        this.pacientes = resp;
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -47,18 +49,18 @@ export class Medicos implements OnInit {
     });
   }
 
-  cambiarEstado(medico: any) {
+  cambiarEstadoPaciente(paciente: any) {
     const nuevoEstado =
-      medico.ESTADO === 'ACTIVO'
+      paciente.ESTADO === 'ACTIVO'
         ? 2
         : 1;
-    this.api.cambiarEstado(
-      medico.RUN_MED,
+    this.api.cambiarEstadoPaciente(
+      paciente.RUN_PAC,
       nuevoEstado
     )
     .subscribe({
       next: () => {
-        medico.ESTADO =
+        paciente.ESTADO =
           nuevoEstado === 1
             ? 'ACTIVO'
             : 'INACTIVO';
@@ -70,7 +72,7 @@ export class Medicos implements OnInit {
     });
   }
 
-  nuevoMedico() {
+  nuevoPaciente() {
     this.mostrarFormulario = true;
   }
 
@@ -91,11 +93,15 @@ export class Medicos implements OnInit {
   this.nuevoRun = `${run}-${dv.toUpperCase()}`;
   }
 
-  guardarMedico() {
+  guardarPaciente() {
     const formatoRun =
       /^\d{1,2}\.\d{3}\.\d{3}-[0-9K]$/;
     if (!formatoRun.test(this.nuevoRun)) {
       alert('RUN inválido');
+      return;
+    }
+    if (this.nuevoTelefono.length !== 9) {
+      alert('El teléfono debe tener 9 dígitos');
       return;
     }
     const datos = {
@@ -104,13 +110,15 @@ export class Medicos implements OnInit {
       apellidoPat: this.nuevoApellidoPat,
       apellidoMat: this.nuevoApellidoMat,
       fechaNacimiento: this.nuevoFechaNacimiento,
-      sexo: this.nuevoSexo
+      telefono: this.nuevoTelefono,
+      sexo: this.nuevoSexo,
+      direccion: this.nuevoDireccion
     };
 
-    this.api.crearMedico(datos).subscribe({
+    this.api.crearPaciente(datos).subscribe({
         next: () => {
           alert(
-            'Médico creado correctamente'
+            'Paciente creado correctamente'
           );
           this.mostrarFormulario = false;
 
@@ -119,15 +127,28 @@ export class Medicos implements OnInit {
           this.nuevoApellidoPat = '';
           this.nuevoApellidoMat = '';
           this.nuevoFechaNacimiento = '';
+          this.nuevoTelefono = '';
           this.nuevoSexo = '';
-          this.cargarMedicos();
+          this.nuevoDireccion = '';
+          this.cargarPacientes();
         },
         error: (err) => {
           console.error(err);
           alert(
-            'Error al crear médico'
+            'Error al crear paciente'
           );
         }
       });
   }
+
+//
+  formatearTelefono(event: any) {
+    let valor = event.target.value;
+    // Permitir solamente números
+    valor = valor.replace(/\D/g, '');
+    // Máximo 9 dígitos
+    valor = valor.substring(0, 9);
+    this.nuevoTelefono = valor;
+  }
+
 }
