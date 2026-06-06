@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
+import { loginGuard } from './guards/login-guard';
 
 import { Login } from './pages/auth/login/login';
 import { Inicio } from './pages/inicio/inicio';
@@ -15,27 +17,37 @@ export const routes: Routes = [
     },
     {
     path: 'login',
-    component: Login
+    component: Login,
+    canActivate: [loginGuard]
+    },
+    {
+    path: '**',
+    redirectTo: 'login'
     },
     {
     path: 'inicio',
-    component: Inicio
+    component: Inicio,
+    canActivate: [authGuard]
     },
     {
     path: 'citas',
-    component: Citas
+    component: Citas,
+    canActivate: [authGuard]
     },
     {
     path: 'horarios',
-    component: Horarios
+    component: Horarios,
+    canActivate: [authGuard]
     },
     {
     path: 'medicos',
-    component: Medicos
+    component: Medicos,
+    canActivate: [authGuard]
     },
     {
     path: 'pacientes',
-    component: Pacientes
+    component: Pacientes,
+    canActivate: [authGuard]
     },
 
 ];
