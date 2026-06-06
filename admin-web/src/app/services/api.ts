@@ -73,4 +73,10 @@ cambiarEstadoPaciente(run: string, estado: number) {
   );
 }
 
+obtenerCitas() {
+  return this.http.get(
+    `${this.url}/citas`
+  );
+}
+
 }

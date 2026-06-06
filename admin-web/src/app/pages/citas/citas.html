@@ -1,3 +1,56 @@
 <app-sidebar></app-sidebar>
 
-<p>citas works!</p>
+<div class="container">
+    <h1>Citas Médicas</h1>
+    <div class="filtros">
+    <input
+        type="text"
+        placeholder="Buscar paciente..."
+        [(ngModel)]="filtroPaciente">
+    <input
+        type="text"
+        placeholder="Buscar médico..."
+        [(ngModel)]="filtroMedico">
+    <input
+        type="date"
+        [(ngModel)]="fechaFiltro">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Servicio</th>
+                <th>Box</th>
+                <th>Piso</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cita of citasFiltradas">
+                <td>
+                    {{ cita.FECHA | date:'dd/MM/yyyy' }}
+                </td>
+                <td>
+                    {{ cita.HORA | date:'HH:mm' }}
+                </td>
+                <td>
+                    {{ cita.NOMBRE_PACIENTE }}
+                </td>
+                <td>
+                    {{ cita.NOMBRE_MEDICO }}
+                </td>
+                <td>
+                    {{ cita.SERVICIO }}
+                </td>
+                <td>
+                    {{ cita.BOX }}
+                </td>
+                <td>
+                    {{ cita.PISO }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

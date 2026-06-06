@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -17,6 +17,7 @@ import { Sidebar } from '../../components/sidebar/sidebar';
 export class Horarios implements OnInit {
 
   private api = inject(Api);
+  private cdr = inject(ChangeDetectorRef);
 
   medicos: any[] = [];
 
@@ -34,6 +35,7 @@ export class Horarios implements OnInit {
     this.api.obtenerMedicos()
       .subscribe((resp: any) => {
         this.medicos = resp;
+        this.cdr.detectChanges();
       });
   }
 
@@ -63,26 +65,17 @@ export class Horarios implements OnInit {
 
   this.api.generarHorarios(datos)
     .subscribe({
-
       next: (resp: any) => {
-
         alert(
           `Se generaron ${resp.horariosGenerados} horarios correctamente`
         );
-
       },
-
       error: (err) => {
-
         console.error(err);
-
         alert(
           'Error al generar los horarios'
         );
-
       }
-
     });
-
 }
 }
