@@ -1362,27 +1362,41 @@ app.post('/api/horarios/generar', async (req, res) => {
         horaFin,
         duracion
     } = req.body;
-
     let connection;
-
     try {
-
         connection = await oracledb.getConnection(dbConfig);
-
+        // VALIDAR QUE EL MÉDICO ESTÉ ACTIVO
+        const validarMedico = await connection.execute(
+            `
+            SELECT ESTADO_ID_ESTADO
+            FROM MEDICO
+            WHERE RUN_MED = :medico
+            `,
+            {
+                medico
+            },
+            {
+                outFormat: oracledb.OUT_FORMAT_OBJECT
+            }
+        );
+        if (
+            validarMedico.rows.length === 0 ||
+            validarMedico.rows[0].ESTADO_ID_ESTADO !== 1
+        ) {
+            return res.status(400).json({
+                success: false,
+                mensaje: 'El profesional se encuentra inactivo'
+            });
+        }
         const inicio = new Date(`${fecha}T${horaInicio}`);
         const fin = new Date(`${fecha}T${horaFin}`);
-
         let horariosGenerados = 0;
-
         while (inicio < fin) {
-
             const horaString =
                 inicio.getHours().toString().padStart(2, '0')
                 + ':'
                 +
                 inicio.getMinutes().toString().padStart(2, '0');
-
-            // Verificar si ya existe
             const existe = await connection.execute(
                 `
                 SELECT ID_HORARIO
@@ -1400,7 +1414,6 @@ app.post('/api/horarios/generar', async (req, res) => {
                     outFormat: oracledb.OUT_FORMAT_OBJECT
                 }
             );
-
             if (existe.rows.length === 0) {
                 await connection.execute(
                     `
@@ -1432,16 +1445,13 @@ app.post('/api/horarios/generar', async (req, res) => {
                 inicio.getMinutes() + Number(duracion)
             );
         }
-
         await connection.commit();
-
         res.json({
             success: true,
             horariosGenerados
         });
     } catch (error) {
         console.error(error);
-
         res.status(500).json({
             success: false,
             error: error.message
@@ -1451,7 +1461,6 @@ app.post('/api/horarios/generar', async (req, res) => {
             await connection.close();
         }
     }
-
 });
 
 //

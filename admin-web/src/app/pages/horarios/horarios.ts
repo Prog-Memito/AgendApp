@@ -32,12 +32,18 @@ export class Horarios implements OnInit {
   }
 
   cargarMedicos() {
-    this.api.obtenerMedicos()
-      .subscribe((resp: any) => {
-        this.medicos = resp;
-        this.cdr.detectChanges();
-      });
-  }
+  this.api.obtenerMedicos().subscribe({
+    next: (resp: any) => {
+      this.medicos = resp.filter(
+        (m: any) => m.ESTADO === 'ACTIVO'
+      );
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
 
   generarHorarios() {
 

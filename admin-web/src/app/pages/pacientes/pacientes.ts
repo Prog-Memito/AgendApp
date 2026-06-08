@@ -20,6 +20,11 @@ export class Pacientes implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   pacientes: any[] = [];
+  filtroRun = '';
+  filtroNombre = '';
+
+  paginaActual = 1;
+  registrosPorPagina = 10;
 
   mostrarFormulario = false;
 
@@ -60,10 +65,7 @@ export class Pacientes implements OnInit {
     )
     .subscribe({
       next: () => {
-        paciente.ESTADO =
-          nuevoEstado === 1
-            ? 'ACTIVO'
-            : 'INACTIVO';
+        this.cargarPacientes();
       },
       error: (err) => {
         console.error('ERROR COMPLETO:', err);
@@ -151,4 +153,69 @@ export class Pacientes implements OnInit {
     this.nuevoTelefono = valor;
   }
 
+//
+get pacientesFiltrados() {
+  return this.pacientes.filter(p => {
+    const coincideRun =
+      p.RUN_PAC
+        .toLowerCase()
+        .includes(
+          this.filtroRun.toLowerCase()
+        );
+    const coincideNombre =
+      p.NOMBRE_COMPLETO
+        .toLowerCase()
+        .includes(
+          this.filtroNombre.toLowerCase()
+        );
+    return coincideRun && coincideNombre;
+  });
+}
+
+//
+get pacientesPaginados() {
+  const inicio =
+    (this.paginaActual - 1)
+    *
+    this.registrosPorPagina;
+  const fin =
+    inicio
+    +
+    this.registrosPorPagina;
+  return this.pacientesFiltrados.slice(
+    inicio,
+    fin
+  );
+}
+
+//
+get totalPaginas() {
+  return Math.ceil(
+    this.pacientesFiltrados.length
+    /
+    this.registrosPorPagina
+  );
+}
+
+//
+paginaSiguiente() {
+  if (
+    this.paginaActual
+    <
+    this.totalPaginas
+  ) {
+    this.paginaActual++;
+  }
+}
+
+//
+paginaAnterior() {
+  if (
+    this.paginaActual
+    >
+    1
+  ) {
+    this.paginaActual--;
+  }
+}
 }

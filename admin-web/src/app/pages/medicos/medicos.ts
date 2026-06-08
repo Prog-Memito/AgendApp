@@ -22,6 +22,12 @@ export class Medicos implements OnInit {
   medicos: any[] = [];
   profesiones: any[] = [];
 
+  filtroRun = '';
+  filtroNombre = '';
+
+  paginaActual = 1;
+  registrosPorPagina = 10;
+
   mostrarFormulario = false;
 
   nuevoRun = '';
@@ -38,22 +44,20 @@ export class Medicos implements OnInit {
   }
 
   cargarMedicos() {
-    this.api.obtenerMedicos().subscribe({
-      next: (resp: any) => {
-        console.log(resp);
-        this.medicos = resp;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
-  }
+  this.api.obtenerMedicos().subscribe({
+    next: (resp: any) => {
+      this.medicos = resp;
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
 
   cargarProfesiones() {
   this.api.obtenerProfesiones().subscribe({
       next: (resp: any) => {
-        this.profesiones = resp;
       },
       error: (err) => {
         console.error(err);
@@ -72,10 +76,7 @@ export class Medicos implements OnInit {
     )
     .subscribe({
       next: () => {
-        medico.ESTADO =
-          nuevoEstado === 1
-            ? 'ACTIVO'
-            : 'INACTIVO';
+        this.cargarMedicos();
       },
       error: (err) => {
         console.error('ERROR COMPLETO:', err);
@@ -146,4 +147,70 @@ export class Medicos implements OnInit {
         }
       });
   }
+
+//
+get medicosFiltrados() {
+  return this.medicos.filter(p => {
+    const coincideRun =
+      p.RUN_MED
+        .toLowerCase()
+        .includes(
+          this.filtroRun.toLowerCase()
+        );
+    const coincideNombre =
+      p.NOMBRE_COMPLETO
+        .toLowerCase()
+        .includes(
+          this.filtroNombre.toLowerCase()
+        );
+    return coincideRun && coincideNombre;
+  });
+}
+
+//
+get medicosPaginados() {
+  const inicio =
+    (this.paginaActual - 1)
+    *
+    this.registrosPorPagina;
+  const fin =
+    inicio
+    +
+    this.registrosPorPagina;
+  return this.medicosFiltrados.slice(
+    inicio,
+    fin
+  );
+}
+
+//
+get totalPaginas() {
+  return Math.ceil(
+    this.medicosFiltrados.length
+    /
+    this.registrosPorPagina
+  );
+}
+
+//
+paginaSiguiente() {
+  if (
+    this.paginaActual
+    <
+    this.totalPaginas
+  ) {
+    this.paginaActual++;
+  }
+}
+
+//
+paginaAnterior() {
+  if (
+    this.paginaActual
+    >
+    1
+  ) {
+    this.paginaActual--;
+  }
+}
 }

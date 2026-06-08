@@ -9,6 +9,16 @@
         ➕ Nuevo Profesional
 
     </button>
+    <div class="filtros">
+        <input
+            type="text"
+            placeholder="Buscar por RUN"
+            [(ngModel)]="filtroRun">
+        <input
+            type="text"
+            placeholder="Buscar por Nombre"
+            [(ngModel)]="filtroNombre">
+    </div>
     <table>
         <thead>
             <tr>
@@ -22,7 +32,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let medico of medicos">
+            <tr *ngFor="let medico of medicosPaginados">
                 <td>{{ medico.RUN_MED }}</td>
                 <td>
                     {{ medico.NOMBRE_COMPLETO }}
@@ -54,6 +64,24 @@
             </tr>
         </tbody>
     </table>
+    <div class="paginador">
+            <button
+                (click)="paginaAnterior()"
+                [disabled]="paginaActual === 1">
+                ⬅ Anterior
+            </button>
+            <span>
+                Página
+                {{ paginaActual }}
+                de
+                {{ totalPaginas }}
+            </span>
+            <button
+                (click)="paginaSiguiente()"
+                [disabled]="paginaActual === totalPaginas">
+                Siguiente ➡
+            </button>
+        </div>
 
     <div *ngIf="mostrarFormulario" class="formulario-card">
 
