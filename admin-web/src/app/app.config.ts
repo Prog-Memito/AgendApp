@@ -8,6 +8,8 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
@@ -18,6 +20,9 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAuth(() =>
       getAuth()
+    ),
+    provideCharts(
+      withDefaultRegisterables()
     )
   ]
 };

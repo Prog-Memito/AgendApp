@@ -24,25 +24,33 @@
 
     </select>
 
-    <label>Fecha</label>
-    <input type="date" [(ngModel)]="fecha">
+    <div class="grid">
 
-    <label>Hora Inicio</label>
-    <input type="time" [(ngModel)]="horaInicio">
+    <div>
+        <label>Fecha</label>
+        <input type="date" [(ngModel)]="fecha">
+    </div>
 
-    <label>Hora Fin</label>
-    <input type="time" [(ngModel)]="horaFin">
+    <div>
+        <label>Duración</label>
+        <select [(ngModel)]="duracion">
+            <option [value]="10">10 minutos</option>
+            <option [value]="15">15 minutos</option>
+            <option [value]="20">20 minutos</option>
+        </select>
+    </div>
 
-    <label>Duración</label>
+    <div>
+        <label>Hora Inicio</label>
+        <input type="time" [(ngModel)]="horaInicio">
+    </div>
 
-    <select [(ngModel)]="duracion">
+    <div>
+        <label>Hora Fin</label>
+        <input type="time" [(ngModel)]="horaFin">
+    </div>
 
-    <option [value]="15">15 minutos</option>
-    <option [value]="30">30 minutos</option>
-    <option [value]="45">45 minutos</option>
-    <option [value]="60">60 minutos</option>
-
-    </select>
+</div>
 
     <button (click)="generarHorarios()">
         Generar Horarios

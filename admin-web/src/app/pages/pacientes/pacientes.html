@@ -3,8 +3,10 @@
 <div class="container"> 
 
     <h1>Pacientes</h1>
-    <button (click)="mostrarFormulario = !mostrarFormulario">
-        Nuevo Paciente
+    <button
+    class="btn-nuevo"
+    (click)="mostrarFormulario = !mostrarFormulario">
+        ➕ Nuevo Paciente
     </button>
     <table>
         <thead>
@@ -54,65 +56,69 @@
         </tbody>
     </table>
 
-    <div *ngIf="mostrarFormulario">
+    <div *ngIf="mostrarFormulario" class="formulario-card">
 
     <h2>Nuevo Paciente</h2>
 
-    <input
-        type="text"
-        placeholder="12.345.678-K"
-        maxlength="12"
-        [(ngModel)]="nuevoRun"
-        (input)="formatearRun($event)">
+    <div class="grid-form">
 
-    <input
-        type="text"
-        placeholder="Nombre"
-        [(ngModel)]="nuevoNombre">
+        <input
+            type="text"
+            placeholder="12.345.678-K"
+            maxlength="12"
+            [(ngModel)]="nuevoRun"
+            (input)="formatearRun($event)">
 
-    <input
-        type="text"
-        placeholder="Apellido Paterno"
-        [(ngModel)]="nuevoApellidoPat">
+        <input
+            type="text"
+            placeholder="Nombre"
+            [(ngModel)]="nuevoNombre">
 
-    <input
-        type="text"
-        placeholder="Apellido Materno"
-        [(ngModel)]="nuevoApellidoMat">
+        <input
+            type="text"
+            placeholder="Apellido Paterno"
+            [(ngModel)]="nuevoApellidoPat">
 
-    <input
-        type="date"
-        [(ngModel)]="nuevoFechaNacimiento">
+        <input
+            type="text"
+            placeholder="Apellido Materno"
+            [(ngModel)]="nuevoApellidoMat">
 
-    <input
-        type="text"
-        placeholder="Teléfono"
-        maxlength="9"
-        inputmode="numeric"
-        [(ngModel)]="nuevoTelefono"
-        (input)="formatearTelefono($event)">
+        <input
+            type="date"
+            [(ngModel)]="nuevoFechaNacimiento">
 
-    <input
-        type="text"
-        placeholder="Dirección"
-        [(ngModel)]="nuevoDireccion">
+        <input
+            type="text"
+            placeholder="Teléfono"
+            maxlength="9"
+            inputmode="numeric"
+            [(ngModel)]="nuevoTelefono"
+            (input)="formatearTelefono($event)">
 
-    <select
-        [(ngModel)]="nuevoSexo">
+        <input
+            type="text"
+            placeholder="Dirección"
+            [(ngModel)]="nuevoDireccion">
 
-        <option value="">
-            Seleccionar
-        </option>
+        <select
+            [(ngModel)]="nuevoSexo">
 
-        <option value="M">
-            Masculino
-        </option>
+            <option value="">
+                Seleccionar
+            </option>
 
-        <option value="F">
-            Femenino
-        </option>
+            <option value="M">
+                Masculino
+            </option>
 
-    </select>
+            <option value="F">
+                Femenino
+            </option>
+
+        </select>
+
+    </div>
 
     <button (click)="guardarPaciente()">
         Guardar
