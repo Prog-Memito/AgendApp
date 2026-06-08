@@ -28,6 +28,12 @@ export class Api {
   );
 }
 
+obtenerProfesiones() {
+  return this.http.get(
+    `${this.url}/profesiones`
+  );
+}
+
   crearMedico(datos: any) {
   return this.http.post(
     `${this.url}/medicos`,
@@ -78,5 +84,24 @@ obtenerCitas() {
     `${this.url}/citas`
   );
 }
+
+buscarCitas(
+  runPaciente: string,
+  runMedico: string,
+  fecha: string
+) {
+  return this.http.get(
+    `${this.url}/citas/buscar`,
+    {
+      params: {
+        runPaciente,
+        runMedico,
+        fecha
+      }
+    }
+  );
+}
+
+
 
 }

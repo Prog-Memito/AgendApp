@@ -20,6 +20,7 @@ export class Medicos implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   medicos: any[] = [];
+  profesiones: any[] = [];
 
   mostrarFormulario = false;
 
@@ -27,11 +28,13 @@ export class Medicos implements OnInit {
   nuevoNombre = '';
   nuevoApellidoPat = '';
   nuevoApellidoMat = '';
+  nuevaProfesion = '';
   nuevoFechaNacimiento = '';
   nuevoSexo = '';
 
   ngOnInit() {
     this.cargarMedicos();
+    this.cargarProfesiones();
   }
 
   cargarMedicos() {
@@ -40,6 +43,17 @@ export class Medicos implements OnInit {
         console.log(resp);
         this.medicos = resp;
         this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+  }
+
+  cargarProfesiones() {
+  this.api.obtenerProfesiones().subscribe({
+      next: (resp: any) => {
+        this.profesiones = resp;
       },
       error: (err) => {
         console.error(err);
@@ -103,6 +117,7 @@ export class Medicos implements OnInit {
       nombre: this.nuevoNombre,
       apellidoPat: this.nuevoApellidoPat,
       apellidoMat: this.nuevoApellidoMat,
+      profesion: this.nuevaProfesion,
       fechaNacimiento: this.nuevoFechaNacimiento,
       sexo: this.nuevoSexo
     };
@@ -118,6 +133,7 @@ export class Medicos implements OnInit {
           this.nuevoNombre = '';
           this.nuevoApellidoPat = '';
           this.nuevoApellidoMat = '';
+          this.nuevaProfesion = '';
           this.nuevoFechaNacimiento = '';
           this.nuevoSexo = '';
           this.cargarMedicos();

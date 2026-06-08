@@ -21,10 +21,6 @@ export const routes: Routes = [
     canActivate: [loginGuard]
     },
     {
-    path: '**',
-    redirectTo: 'login'
-    },
-    {
     path: 'inicio',
     component: Inicio,
     canActivate: [authGuard]

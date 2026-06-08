@@ -5,15 +5,18 @@
     <div class="filtros">
     <input
         type="text"
-        placeholder="Buscar paciente..."
+        placeholder="Buscar paciente (RUT)"
         [(ngModel)]="filtroPaciente">
     <input
         type="text"
-        placeholder="Buscar médico..."
+        placeholder="Buscar profesional (RUT)"
         [(ngModel)]="filtroMedico">
     <input
         type="date"
         [(ngModel)]="fechaFiltro">
+    <button (click)="buscarCitas()">
+        Buscar
+    </button>
     </div>
     <table>
         <thead>
@@ -21,7 +24,7 @@
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Paciente</th>
-                <th>Médico</th>
+                <th>Profesional</th>
                 <th>Servicio</th>
                 <th>Box</th>
                 <th>Piso</th>

@@ -2,15 +2,16 @@
 
 <div class="container">
 
-    <h1>Médicos</h1>
+    <h1>Profesionales</h1>
     <button (click)="mostrarFormulario = !mostrarFormulario">
-        Nuevo Médico
+        Nuevo Profesional
     </button>
     <table>
         <thead>
             <tr>
                 <th>RUN</th>
                 <th>Nombre Completo</th>
+                <th>Profesión</th>
                 <th>Fecha Nacimiento</th>
                 <th>Sexo</th>
                 <th>Estado</th>
@@ -22,6 +23,9 @@
                 <td>{{ medico.RUN_MED }}</td>
                 <td>
                     {{ medico.NOMBRE_COMPLETO }}
+                </td>
+                <td>
+                    {{ medico.PROFESION }}
                 </td>
                 <td>
                     {{ medico.FECH_NAC | date:'dd/MM/yyyy' }}
@@ -44,7 +48,7 @@
 
     <div *ngIf="mostrarFormulario">
 
-    <h2>Nuevo Médico</h2>
+    <h2>Nuevo Profesional</h2>
 
     <input
         type="text"
@@ -72,6 +76,22 @@
         type="date"
         [(ngModel)]="nuevoFechaNacimiento">
 
+    <select [(ngModel)]="nuevaProfesion">
+
+    <option value="">
+        Seleccione una profesión
+    </option>
+
+    <option
+        *ngFor="let p of profesiones"
+        [value]="p.ID_PRO">
+
+        {{ p.PROFESION }}
+
+    </option>
+
+    </select>
+    
     <select
         [(ngModel)]="nuevoSexo">
 
