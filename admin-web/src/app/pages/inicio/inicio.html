@@ -2,28 +2,87 @@
 
 <div class="content">
 
-<h1>Resumen General</h1>
+    <h1>Dashboard</h1>
 
-<div class="cards">
+    <div class="cards">
 
-    <div class="card">
-    <h3>Total Citas</h3>
-    <span>{{ totalCitas }}</span>
+        <div class="card pacientes">
+            <h2>👥 Pacientes</h2>
+
+            <div class="numero">
+                {{ dashboard.pacientes.TOTAL }}
+            </div>
+
+            <div class="detalle">
+                <span>🟢 {{ dashboard.pacientes.ACTIVOS }} Activos</span>
+                <span>🔴 {{ dashboard.pacientes.INACTIVOS }} Inactivos</span>
+            </div>
+        </div>
+
+        <div class="card medicos">
+            <h2>🩺 Médicos</h2>
+
+            <div class="numero">
+                {{ dashboard.medicos.TOTAL }}
+            </div>
+
+            <div class="detalle">
+                <span>🟢 {{ dashboard.medicos.ACTIVOS }} Activos</span>
+                <span>🔴 {{ dashboard.medicos.INACTIVOS }} Inactivos</span>
+            </div>
+        </div>
+
+        <div class="card horarios">
+            <h2>📅 Horarios</h2>
+
+            <div class="numero">
+                {{ dashboard.horarios.TOTAL }}
+            </div>
+
+            <div class="detalle">
+                <span>🟢 {{ dashboard.horarios.DISPONIBLES }} Disponibles</span>
+                <span>🔵 {{ dashboard.horarios.RESERVADAS }} Reservados</span>
+            </div>
+        </div>
+
     </div>
 
-    <div class="card">
-    <h3>Pacientes</h3>
-    <span>{{ totalPacientes }}</span>
+    <!-- Gráfico principal -->
+
+<div class="grafico-principal">
+
+    <h2>Días más agendados</h2>
+
+    <canvas
+        baseChart
+        [data]="diasChartData"
+        [type]="'bar'">
+    </canvas>
+
+</div>
+
+<!-- Gráficos secundarios -->
+
+<div class="graficos-secundarios">
+
+    <div class="grafico">
+        <h2>Médicos más solicitados</h2>
+
+        <canvas
+            baseChart
+            [data]="medicosChartData"
+            [type]="'bar'">
+        </canvas>
     </div>
 
-    <div class="card">
-    <h3>Médicos</h3>
-    <span>{{ totalMedicos }}</span>
-    </div>
+    <div class="grafico">
+        <h2>Servicios más solicitados</h2>
 
-    <div class="card">
-    <h3>Cancelaciones</h3>
-    <span>{{ totalCancelaciones }}</span>
+        <canvas
+            baseChart
+            [data]="serviciosChartData"
+            [type]="'pie'">
+        </canvas>
     </div>
 
 </div>

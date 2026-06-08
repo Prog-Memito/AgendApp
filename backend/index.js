@@ -1034,38 +1034,202 @@ app.get('/api/admin/:uid', async (req, res) => {
 });
 
 //
-app.get('/api/dashboard/resumen', async (req, res) => {
+app.get('/api/dashboard', async (req, res) => {
     let connection;
-
     try {
-        connection = await oracledb.getConnection(dbConfig);
+        connection =
+            await oracledb.getConnection(dbConfig);
+    
+        // PACIENTES
+        const pacientes =
+            await connection.execute(
+                `
+                SELECT
+                    COUNT(*) TOTAL,
+                    SUM(
+                        CASE
+                            WHEN ESTADO_ID_ESTADO = 1
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) ACTIVOS,
+                    SUM(
+                        CASE
+                            WHEN ESTADO_ID_ESTADO = 2
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) INACTIVOS
+                FROM PACIENTE
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+        // MEDICOS
+        const medicos =
+            await connection.execute(
+                `
+                SELECT
+                    COUNT(*) TOTAL,
+                    SUM(
+                        CASE
+                            WHEN ESTADO_ID_ESTADO = 1
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) ACTIVOS,
+                    SUM(
+                        CASE
+                            WHEN ESTADO_ID_ESTADO = 2
+                            THEN 1
+                            ELSE 0
+                        END
+                    ) INACTIVOS
+                FROM MEDICO
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+        // HORARIOS
+        const horarios =
+            await connection.execute(
+                `
+                SELECT
+                    COUNT(*) TOTAL
+                FROM AGEND_MED
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+        // HORAS RESERVADAS
+        const reservadas =
+            await connection.execute(
+                `
+                SELECT
+                    COUNT(*) TOTAL
+                FROM CITA_MEDICA
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+        const totalHorarios =
+            horarios.rows[0].TOTAL;
 
-        // Consulta unificada en DUAL para obtener los contadores clave del dashboard
-        const resultado = await connection.execute(
-            `
-            SELECT
-                (SELECT COUNT(*) FROM CITA_MEDICA) AS TOTAL_CITAS,
-                (SELECT COUNT(*) FROM PACIENTE) AS TOTAL_PACIENTES,
-                (SELECT COUNT(*) FROM MEDICO) AS TOTAL_MEDICOS,
-                (SELECT COUNT(*) FROM BLOQ_PARC_CITA) AS TOTAL_CANCELACIONES
-            FROM DUAL
-            `,
-            [],
-            { outFormat: oracledb.OUT_FORMAT_OBJECT }
-        );
+        const totalReservadas =
+            reservadas.rows[0].TOTAL;
 
-        return res.json(resultado.rows[0]);
+        // DIAS MÁS AGENDADOS
+        const diasMasAgendados =
+            await connection.execute(
+                `
+                SELECT
+                    TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH') DIA,
+                    COUNT(*) TOTAL
+                FROM CITA_MEDICA
+                GROUP BY
+                    TO_CHAR(FECHA, 'DAY', 'NLS_DATE_LANGUAGE=SPANISH')
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
 
-    } catch (err) {
-        console.error("❌ Error en dashboard/resumen:", err);
-        return res.status(500).json({ error: err.message });
+        //
+        const medicosMasSolicitados =
+            await connection.execute(
+                `
+                SELECT
+                    M.NOMB_MED || ' ' ||
+                    M.APELL_PAT_MED || ' ' ||
+                    M.APELL_MAT_MED
+                    AS MEDICO,
+                    COUNT(*) TOTAL
+                FROM CITA_MEDICA C
+                INNER JOIN AGEND_MED A
+                    ON A.ID_HORARIO =
+                    C.AGEND_MED_ID_HORARIO
+                INNER JOIN MEDICO M
+                    ON M.RUN_MED =
+                    A.MEDICO_RUN_MED
+                GROUP BY
+                    M.NOMB_MED,
+                    M.APELL_PAT_MED,
+                    M.APELL_MAT_MED
+                ORDER BY TOTAL DESC
+                `,
+                [],
+                {
+                outFormat:
+                    oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+
+        //
+        const serviciosMasSolicitados =
+            await connection.execute(
+                `
+                SELECT
+                    CS.NOMB_SERV,
+                    COUNT(*) TOTAL
+                FROM CITA_MEDICA C
+                INNER JOIN CARTA_SERVICIO CS
+                    ON CS.ID_SERV =
+                    C.CARTA_SERVICIO_ID_SERV
+                GROUP BY
+                    CS.NOMB_SERV
+                ORDER BY TOTAL DESC
+                `,
+                [],
+                {
+                outFormat:
+                    oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+
+        res.json({
+            pacientes:pacientes.rows[0],
+
+            medicos:medicos.rows[0],
+
+            horarios: {
+                TOTAL:totalHorarios,
+
+                DISPONIBLES:totalHorarios -totalReservadas,
+
+                RESERVADAS:totalReservadas
+            },
+
+            diasMasAgendados: diasMasAgendados.rows,
+
+            medicosMasSolicitados: medicosMasSolicitados.rows,
+
+            serviciosMasSolicitados:serviciosMasSolicitados.rows
+
+        });
+    } catch(error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     } finally {
-        if (connection) {
-            try {
-                await connection.close();
-            } catch (closeErr) {
-                console.error("Error al cerrar conexión en dashboard/resumen:", closeErr);
-            }
+        if(connection) {
+            await connection.close();
         }
     }
 });

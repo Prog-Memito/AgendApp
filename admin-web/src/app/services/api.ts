@@ -16,9 +16,9 @@ export class Api {
     );
 }
 
-  obtenerResumen() {
+  obtenerDashboard() {
   return this.http.get(
-    `${this.url}/dashboard/resumen`
+    `${this.url}/dashboard`
   );
 }
 
