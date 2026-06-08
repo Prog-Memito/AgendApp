@@ -1087,10 +1087,13 @@ app.get('/api/medicos', async (req, res) => {
                 M.APELL_MAT_MED AS NOMBRE_COMPLETO,
                 M.FECH_NAC,
                 M.SEXO,
-                E.ESTADO
+                E.ESTADO,
+                P.PROFESION
             FROM MEDICO M
             INNER JOIN ESTADO E
                 ON E.ID_ESTADO = M.ESTADO_ID_ESTADO
+            INNER JOIN PROFESION P
+                ON P.ID_PRO = M.PROFESION_ID_PRO
             ORDER BY M.NOMB_MED
             `,
             [],
@@ -1122,6 +1125,7 @@ app.post('/api/medicos', async (req, res) => {
         nombre,
         apellidoPat,
         apellidoMat,
+        profesion,
         fechaNacimiento,
         sexo
     } = req.body;
@@ -1138,6 +1142,7 @@ app.post('/api/medicos', async (req, res) => {
                 NOMB_MED,
                 APELL_PAT_MED,
                 APELL_MAT_MED,
+                PROFESION_ID_PRO,
                 FECH_NAC,
                 SEXO,
                 ESTADO_ID_ESTADO
@@ -1148,6 +1153,7 @@ app.post('/api/medicos', async (req, res) => {
                 :nombre,
                 :apellidoPat,
                 :apellidoMat,
+                :profesion,
                 TO_DATE(:fechaNacimiento,'YYYY-MM-DD'),
                 :sexo,
                 2
@@ -1158,6 +1164,7 @@ app.post('/api/medicos', async (req, res) => {
                 nombre,
                 apellidoPat,
                 apellidoMat,
+                profesion,
                 fechaNacimiento,
                 sexo
             },
@@ -1184,7 +1191,6 @@ app.post('/api/medicos', async (req, res) => {
 
 //
 app.post('/api/horarios/generar', async (req, res) => {
-
     const {
         medico,
         fecha,
@@ -1541,6 +1547,124 @@ try {
     await connection.close();
     }
 }
+});
+
+//
+app.get('/api/citas/buscar', async (req, res) => {
+const {
+    runPaciente,
+    runMedico,
+    fecha
+} = req.query;
+
+let connection;
+
+try {
+
+    connection =
+    await oracledb.getConnection(dbConfig);
+
+    let sql = `
+    SELECT
+        C.ID_CITA,
+        C.FECHA,
+        C.HORA,
+        P.RUN_PAC,
+        P.NOMB_PAC || ' ' ||
+        P.APELL_PAT_PAC || ' ' ||
+        P.APELL_MAT_PAC
+        AS NOMBRE_PACIENTE,
+        M.RUN_MED,
+        M.NOMB_MED || ' ' ||
+        M.APELL_PAT_MED || ' ' ||
+        M.APELL_MAT_MED
+        AS NOMBRE_MEDICO,
+        CS.NOMB_SERV AS SERVICIO,
+        B.NUMB_BOX AS BOX,
+        B.PISO
+    FROM CITA_MEDICA C
+    INNER JOIN PACIENTE P
+        ON P.RUN_PAC = C.PACIENTE_RUN_PAC
+    INNER JOIN AGEND_MED A
+        ON A.ID_HORARIO = C.AGEND_MED_ID_HORARIO
+    INNER JOIN MEDICO M
+        ON M.RUN_MED = A.MEDICO_RUN_MED
+    INNER JOIN CARTA_SERVICIO CS
+        ON CS.ID_SERV = C.CARTA_SERVICIO_ID_SERV
+    INNER JOIN BOXES B
+        ON B.ID_BOX = C.BOXES_ID_BOX
+    WHERE 1=1
+    `;
+    const binds = {};
+    if (runPaciente) {
+    sql += `
+        AND P.RUN_PAC = :runPaciente
+    `;
+    binds.runPaciente = runPaciente;
+    }
+    if (runMedico) {
+    sql += `
+        AND M.RUN_MED = :runMedico
+    `;
+    binds.runMedico = runMedico;
+    }
+    if (fecha) {
+    sql += `
+        AND TRUNC(C.FECHA)
+        = TO_DATE(:fecha,'YYYY-MM-DD')
+    `;
+    binds.fecha = fecha;
+    }
+    sql += `
+    ORDER BY C.FECHA DESC
+    `;
+    const result =
+    await connection.execute(
+        sql,
+        binds,
+        {
+        outFormat:oracledb.OUT_FORMAT_OBJECT
+        }
+    );
+    res.json(result.rows);
+} catch(error) {
+    console.error(error);
+    res.status(500).json(error);
+} finally {
+    if(connection)
+    await connection.close();
+}
+});
+
+//
+app.get('/api/profesiones', async (req, res) => {
+    let connection;
+    try {
+        connection =
+            await oracledb.getConnection(dbConfig);
+        const result =
+            await connection.execute(
+                `
+                SELECT
+                    ID_PRO,
+                    PROFESION
+                FROM PROFESION
+                ORDER BY PROFESION
+                `,
+                [],
+                {
+                    outFormat:
+                        oracledb.OUT_FORMAT_OBJECT
+                }
+            );
+        res.json(result.rows);
+    } catch(error) {
+        console.error(error);
+        res.status(500).json(error);
+    } finally {
+        if(connection)
+            await connection.close();
+    }
 });
 
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));

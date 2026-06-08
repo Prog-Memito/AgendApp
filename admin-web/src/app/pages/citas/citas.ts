@@ -25,6 +25,7 @@ export class Citas implements OnInit {
     this.cargarCitas();
   }
 
+  //
   cargarCitas() {
     this.api.obtenerCitas().subscribe({
       next: (resp: any) => {
@@ -38,6 +39,23 @@ export class Citas implements OnInit {
   }
 
   //
+  buscarCitas() {
+  this.api.buscarCitas(
+    this.filtroPaciente,
+    this.filtroMedico,
+    this.fechaFiltro
+  ).subscribe({next: (resp: any) => {
+      this.citas = resp;
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+
+}
+
+
+  //
   filtroPaciente = '';
   filtroMedico = '';
   fechaFiltro = '';
@@ -45,34 +63,20 @@ export class Citas implements OnInit {
   return this.citas.filter(cita => {
     const coincidePaciente =
       !this.filtroPaciente ||
-      cita.NOMBRE_PACIENTE
-        .toLowerCase()
-        .includes(
-          this.filtroPaciente.toLowerCase()
-        )
-      ||
       cita.RUN_PAC
         .toLowerCase()
-        .includes(
-          this.filtroPaciente.toLowerCase()
-        );
+        .includes(this.filtroPaciente.toLowerCase())
+
     const coincideMedico =
       !this.filtroMedico ||
-      cita.NOMBRE_MEDICO
-        .toLowerCase()
-        .includes(
-          this.filtroMedico.toLowerCase()
-        )
-      ||
       cita.RUN_MED
         .toLowerCase()
-        .includes(
-          this.filtroMedico.toLowerCase()
-        );
+        .includes(this.filtroMedico.toLowerCase())
+
     const coincideFecha =
       !this.fechaFiltro ||
-      cita.FECHA.substring(0,10)
-        === this.fechaFiltro;
+      cita.FECHA.substring(0, 10) === this.fechaFiltro;
+
     return (
       coincidePaciente &&
       coincideMedico &&
