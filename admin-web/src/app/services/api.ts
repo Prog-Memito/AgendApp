@@ -28,7 +28,7 @@ export class Api {
   );
 }
 
-obtenerProfesiones() {
+  obtenerProfesiones() {
   return this.http.get(
     `${this.url}/profesiones`
   );
@@ -85,6 +85,19 @@ obtenerCitas() {
   );
 }
 
+actualizarEstadoCita(
+  idCita: number,
+  estado: string
+) {
+  return this.http.put(
+    `${this.url}/citas/estado`,
+    {
+      idCita,
+      estado
+    }
+  );
+}
+
 buscarCitas(
   runPaciente: string,
   runMedico: string,
@@ -102,6 +115,24 @@ buscarCitas(
   );
 }
 
+obtenerSome() {
+  return this.http.get(
+    `${this.url}/some`
+  );
+}
+
+obtenerCargos() {
+  return this.http.get(
+    `${this.url}/cargos`
+  );
+}
+
+crearSome(datos: any) {
+  return this.http.post(
+    `${this.url}/some`,
+    datos
+  );
+}
 
 
 }

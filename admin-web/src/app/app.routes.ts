@@ -8,6 +8,7 @@ import { Citas } from './pages/citas/citas'
 import { Horarios } from './pages/horarios/horarios';
 import { Medicos } from './pages/medicos/medicos';
 import { Pacientes } from './pages/pacientes/pacientes';
+import { Some } from './pages/some/some';
 
 export const routes: Routes = [
     {
@@ -45,5 +46,10 @@ export const routes: Routes = [
     component: Pacientes,
     canActivate: [authGuard]
     },
+    {
+    path: 'some',
+    component: Some,
+    canActivate: [authGuard]
+    }
 
 ];

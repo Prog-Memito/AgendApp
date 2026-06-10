@@ -1,0 +1,108 @@
+<app-sidebar></app-sidebar>
+
+<div class="container">
+    <h1>Personal SOME</h1>
+    <button class="btn-nuevo" 
+        (click)="mostrarFormulario = !mostrarFormulario">
+        ➕ Nuevo Personal
+    </button>
+
+    <div class="filtros">
+        <input 
+            type="text"
+            placeholder="Buscar por Run"
+            [(ngModel)]="filtroRun">
+        <input 
+            type="text"
+            placeholder="Buscar por nombre"
+            [(ngModel)]="filtroNombre">
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>RUN</th>
+                <th>Nombre Completo</th>
+                <th>Email</th>
+                <th>Cargo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let personal of personalPaginados">
+                <td> {{personal.RUN_SOME}} </td>
+                <td> {{personal.NOMBRE_COMPLETO}} </td>
+                <td> {{personal.EMAIL}} </td>
+                <td> {{personal.CARGO}} </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paginador" *ngIf="personalPaginados.length > 10">
+        <button 
+            (click)="paginaAnterior()"
+            [disabled]="paginaActual === 1">
+                ⬅ Anterior
+        </button>
+        <span>
+            Página
+            {{ paginaActual }}
+            de 
+            {{ totalPaginas }}
+        </span>
+        <button 
+            (click)="paginaSiguiente()"
+            [disabled]="paginaActual === totalPaginas">
+                Siguiente ➡
+        </button>
+    </div>
+
+    <div *ngIf="mostrarFormulario" class="formulario-card">
+
+        <h2>Nuevo Personal</h2>
+    
+        <div class="grid-form">
+
+            <input 
+                type="text"
+                placeholder="12.345.678-9/K"
+                maxlength="12"
+                [(ngModel)]="nuevoRun"
+                (input)="formatearRun($event)">
+            
+            <input 
+                type="text"
+                placeholder="Nombre"
+                [(ngModel)]="nuevoNombre">
+            
+            <input 
+                type="text"
+                placeholder="Apellido Paterno"
+                [(ngModel)]="nuevoApellidoPat">
+            
+            <input 
+                type="text"
+                placeholder="Apellido Materno"
+                [(ngModel)]="nuevoApellidoMat">
+            
+            <input 
+                type="text"
+                placeholder="Email"
+                [(ngModel)]="nuevoEmail">
+            
+            <select [(ngModel)]="nuevoCargo">
+
+                <option value="">
+                    Seleccione un cargo
+                </option>
+
+                <option *ngFor="let c of cargos"
+                    [value]="c.ID_CARGO">
+                    {{ c.CARGO }}
+                </option>
+            </select>
+        </div>
+
+        <button (click)="guardarPersonal()">
+            Guardar
+        </button>
+
+    </div>
+</div>
