@@ -72,7 +72,7 @@
         </tbody>
     </table>
 
-    <div class="paginador">
+    <div class="paginador" *ngIf="pacientesFiltrados.length > 10">
         <button
             (click)="paginaAnterior()"
             [disabled]="paginaActual === 1">

@@ -58,6 +58,7 @@ export class Medicos implements OnInit {
   cargarProfesiones() {
   this.api.obtenerProfesiones().subscribe({
       next: (resp: any) => {
+        this.profesiones = resp;
       },
       error: (err) => {
         console.error(err);

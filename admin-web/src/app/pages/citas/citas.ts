@@ -2,9 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-//Llama a la api 
 import { Api } from '../../services/api';
-//LLama al Sidebar lateral 
 import { Sidebar } from '../../components/sidebar/sidebar';
 
 @Component({
@@ -21,68 +19,108 @@ export class Citas implements OnInit {
 
   citas: any[] = [];
 
-  ngOnInit() {
-    this.cargarCitas();
-  }
+  filtroPaciente = '';
+  filtroMedico = '';
+  fechaFiltro = '';
 
-  //
-  cargarCitas() {
-    this.api.obtenerCitas().subscribe({
-      next: (resp: any) => {
-        this.citas = resp;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
+  paginaActual = 1;
+  registrosPorPagina = 10;
+
+  ngOnInit() {
+    this.buscarCitas();
   }
 
   //
   buscarCitas() {
+  if (
+    !this.filtroPaciente &&
+    !this.filtroMedico &&
+    !this.fechaFiltro
+  ) {
+    alert(
+      'Debe ingresar al menos un filtro'
+    );
+    return;
+  }
+  this.paginaActual = 1;
   this.api.buscarCitas(
     this.filtroPaciente,
     this.filtroMedico,
     this.fechaFiltro
-  ).subscribe({next: (resp: any) => {
+  )
+  .subscribe({
+    next: (resp: any) => {
       this.citas = resp;
     },
     error: (err) => {
       console.error(err);
     }
   });
-
 }
 
-
   //
-  filtroPaciente = '';
-  filtroMedico = '';
-  fechaFiltro = '';
-  get citasFiltradas() {
-  return this.citas.filter(cita => {
-    const coincidePaciente =
-      !this.filtroPaciente ||
-      cita.RUN_PAC
-        .toLowerCase()
-        .includes(this.filtroPaciente.toLowerCase())
+  actualizarEstado(cita: any) {
+    this.api.actualizarEstadoCita(
+      cita.ID_CITA,
+      cita.ESTADO_CITA
+    )
+    .subscribe({
+      next: () => {
+        console.log(
+          'Estado actualizado'
+        );
+      },
+      error: (err) => {
+        console.error(err);
 
-    const coincideMedico =
-      !this.filtroMedico ||
-      cita.RUN_MED
-        .toLowerCase()
-        .includes(this.filtroMedico.toLowerCase())
-
-    const coincideFecha =
-      !this.fechaFiltro ||
-      cita.FECHA.substring(0, 10) === this.fechaFiltro;
-
-    return (
-      coincidePaciente &&
-      coincideMedico &&
-      coincideFecha
-    );
-  });
+        alert(
+          'Error al actualizar estado'
+        );
+      }
+    });
   }
 
+  //
+  get citasPaginadas() {
+    const inicio =
+      (this.paginaActual - 1)
+      *
+      this.registrosPorPagina;
+    const fin =
+      inicio
+      +
+      this.registrosPorPagina;
+    return this.citas.slice(
+      inicio,
+      fin
+    );
+  }
+
+  //
+  get totalPaginas() {
+    return Math.ceil(
+      this.citas.length
+      /
+      this.registrosPorPagina
+    );
+  }
+
+  //
+  paginaSiguiente() {
+    if (
+      this.paginaActual <
+      this.totalPaginas
+    ) {
+      this.paginaActual++;
+    }
+  }
+
+  //
+  paginaAnterior() {
+    if (
+      this.paginaActual > 1
+    ) {
+      this.paginaActual--;
+    }
+  }
 }

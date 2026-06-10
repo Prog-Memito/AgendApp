@@ -64,24 +64,24 @@
             </tr>
         </tbody>
     </table>
-    <div class="paginador">
-            <button
-                (click)="paginaAnterior()"
-                [disabled]="paginaActual === 1">
-                ⬅ Anterior
-            </button>
-            <span>
-                Página
-                {{ paginaActual }}
-                de
-                {{ totalPaginas }}
-            </span>
-            <button
-                (click)="paginaSiguiente()"
-                [disabled]="paginaActual === totalPaginas">
-                Siguiente ➡
-            </button>
-        </div>
+    <div class="paginador" *ngIf="medicosFiltrados.length > 10">
+        <button
+            (click)="paginaAnterior()"
+            [disabled]="paginaActual === 1">
+            ⬅ Anterior
+        </button>
+        <span>
+            Página
+            {{ paginaActual }}
+            de
+            {{ totalPaginas }}
+        </span>
+        <button
+            (click)="paginaSiguiente()"
+            [disabled]="paginaActual === totalPaginas">
+            Siguiente ➡
+        </button>
+    </div>
 
     <div *ngIf="mostrarFormulario" class="formulario-card">
 

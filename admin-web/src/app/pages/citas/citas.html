@@ -28,10 +28,11 @@
                 <th>Servicio</th>
                 <th>Box</th>
                 <th>Piso</th>
+                <th>Estado</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let cita of citasFiltradas">
+            <tr *ngFor="let cita of citasPaginadas">
                 <td>
                     {{ cita.FECHA | date:'dd/MM/yyyy' }}
                 </td>
@@ -53,7 +54,50 @@
                 <td>
                     {{ cita.PISO }}
                 </td>
+                <td>
+                    <select
+                        [(ngModel)]="cita.ESTADO_CITA"
+                        (change)="actualizarEstado(cita)">
+                        <option value="PENDIENTE" [disabled]="cita.ESTADO_CITA !== 'PENDIENTE'">
+                            Pendiente
+                        </option>
+
+                        <option value="CONFIRMADA">
+                            Confirmada
+                        </option>
+
+                        <option value="ATENDIDA">
+                            Atendida
+                        </option>
+
+                        <option value="NO_ASISTIO">
+                            No asistió
+                        </option>
+
+                        <option value="CANCELADA">
+                            Cancelada
+                        </option>
+                    </select>
+                </td>
             </tr>
         </tbody>
     </table>
+    <div class="paginador" *ngIf="citasPaginadas.length > 10">
+        <button
+            (click)="paginaAnterior()"
+            [disabled]="paginaActual === 1">
+            ⬅ Anterior
+        </button>
+        <span>
+            Página
+            {{ paginaActual }}
+            de
+            {{ totalPaginas }}
+        </span>
+        <button
+            (click)="paginaSiguiente()"
+            [disabled]="paginaActual === totalPaginas">
+            Siguiente ➡
+        </button>
+    </div>
 </div>
