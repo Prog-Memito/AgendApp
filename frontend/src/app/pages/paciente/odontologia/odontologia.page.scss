@@ -1,19 +1,15 @@
-// --- CONFIGURACIÓN GLOBAL DE LA PANTALLA ---
 ion-content {
-  // Fuerza el tono azulino muy sutil de fondo de la app en cualquier modo
-  --background: #f8faff !important; 
-  background: #f8faff !important;
-  color: #011a33 !important;
+  // Asegura el tono azulino muy sutil de fondo de la app
+  --background: #f8faff; 
+  color: #011a33;
 }
 
 ion-toolbar {
-  --background: #ffffff !important;
-  --color: #011a33 !important;
-  color: #011a33 !important;
+  --background: #ffffff;
+  --color: #011a33;
   font-weight: 700;
 }
 
-// --- CABECERA DE SELECCIÓN (TÍTULO Y BOTÓN CAMBIAR) ---
 .selection-header {
   display: flex;
   justify-content: space-between;
@@ -23,92 +19,78 @@ ion-toolbar {
   h2 {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #011a33 !important; // Mantiene el texto oscuro institucional
+    color: #011a33;
     margin: 0;
   }
 
   ion-button {
-    --color: #1a6dff !important;
-    color: #1a6dff !important;
+    --color: #1a6dff;
     font-weight: 600;
     font-size: 0.95rem;
     text-transform: none;
   }
 }
 
-// --- CONTENEDOR PRINCIPAL DE SELECCIÓN DE FECHA ---
+/* Seleccion de fecha */
 .date-selection-card {
-  --background: #ffffff !important; // Ataca la propiedad nativa de Ionic
-  background: #ffffff !important;   
+  background: #ffffff !important; // Fuerza el contenedor a mantenerse blanco
   border-radius: 16px;
   margin: 0 0 20px 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
   
   ion-card-content {
     padding: 20px;
-    background: #ffffff !important;
   }
 }
 
 ion-label {
-  color: #2d3748 !important; // Evita que se vuelva gris claro o blanco
+  color: #2d3748 !important;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
-// --- CAMPO INPUT SIMULADO DEL CALENDARIO ---
+/* Contenedor que simula el campo input del calendario */
 .calendar-input-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #cbd5e1 !important; // Reemplazado #ddd por gris limpio que no desaparece
-  border-radius: 12px;                  // Ajustado a 12px para mayor suavidad visual
+  border: 1px solid #cbd5e1; // Gris suave del diseño claro
+  border-radius: 12px;
   padding: 12px 15px;
   margin-top: 10px;
-  background: #ffffff !important;       // Fondo blanco plano obligatorio
+  background: #ffffff !important; // Evita que se torne oscuro
   cursor: pointer;
 
   .placeholder {
-    color: #94a3b8 !important;          // Reemplazado #999 para que sea legible en "dd/mm/aaaa"
+    color: #94a3b8;
     font-size: 1rem;
   }
 
   .selected-value {
-    color: #011a33 !important;          // Color oscuro para la fecha seleccionada
+    color: #011a33;
     font-size: 1rem;
     font-weight: 600;
   }
 
   ion-icon {
     font-size: 1.3rem;
-    color: #a0aec0 !important;          // Ícono del calendario visible
+    color: #a0aec0;
   }
 }
 
 .helper-text {
   font-size: 0.82rem;
-  color: #718096 !important;
+  color: #718096;
   margin: 10px 0 0 2px;
 }
 
-// --- VENTANA EMERGENTE CALENDARIO (ION-MODAL) ---
 ion-modal {
   --height: auto;
   --border-radius: 16px;
-  --background: #ffffff !important;
-  
-  // Estilos internos para el componente nativo del calendario de Ionic
-  ion-datetime {
-    --background: #ffffff !important;
-    background: #ffffff !important;
-    border-radius: 16px;
-  }
 }
 
-// --- ESTADO INICIAL (RECUADRO CELESTE INFERIOR) ---
 .empty-state {
-  --background: #f0f6ff !important; // Fondo azul celeste sutil del diseño claro
-  background: #f0f6ff !important;   
+  background: #f0f6ff !important; // Fondo azul celeste plano de la captura
   border: 1px solid #d8e7ff;
   border-radius: 16px;
   padding: 35px 20px;
@@ -121,98 +103,29 @@ ion-modal {
   text-align: center;
 
   ion-icon {
-    color: #1a6dff !important;      // Ícono azul vibrante centrado
-    font-size: 2.8rem; 
+    color: #1a6dff;
+    font-size: 2.8rem; // Ajuste para el tamaño del icono principal
   }
 
   p {
-    color: #2d3748 !important;      // Texto visible e informativo
+    color: #2d3748;
     font-size: 0.95rem;
     font-weight: 600;
     margin: 0;
   }
 }
 
-// --- LISTADO DE DISPONIBILIDAD (TARJETAS DE ODONTÓLOGOS / MÉDICOS) ---
-.availability-list {
-  margin-top: 15px;
-
-  .doctor-card {
-    --background: #ffffff !important;
-    background: #ffffff !important;
+ion-modal.custom-confirm-modal {
+  --height: auto;
+  --width: 90%;
+  --max-width: 420px;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  
+  &::part(content) {
     border-radius: 16px;
-    margin: 0 0 16px 0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid #edf2f7;
-
-    ion-card-title {
-      color: #011a33 !important;
-      font-size: 1.15rem;
-      font-weight: 700;
-    }
-
-    ion-card-subtitle {
-      color: #718096 !important;
-      font-size: 0.85rem;
-      font-weight: 500;
-      text-transform: none;
-      margin-top: 2px;
-    }
-
-    ion-card-content {
-      background: #ffffff !important;
-      padding-top: 0;
-    }
-  }
-
-  .day-label {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #2d3748;
-    margin-bottom: 8px;
-  }
-
-  .shift-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: #4a5568;
-    font-weight: 600;
-    margin-bottom: 12px;
-
-    ion-icon {
-      color: #ecc94b; // Tono amarillo sutil para el icono de jornada
-    }
-  }
-
-  // Distribución en grilla limpia para los botones de las horas (3 columnas)
-  .hours-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-
-    .hour-btn {
-      --background: #f0f6ff !important;
-      --color: #1a6dff !important;
-      --border-radius: 8px !important;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin: 0;
-      height: 42px;
-      background: #f0f6ff !important;
-      color: #1a6dff !important;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: none;
-      
-      // Efecto cuando el paciente selecciona o presiona la hora
-      &:hover, &:focus {
-        --background: #1a6dff !important;
-        --color: #ffffff !important;
-        background: #1a6dff !important;
-        color: #ffffff !important;
-      }
-    }
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }

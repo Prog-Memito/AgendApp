@@ -1,0 +1,103 @@
+<app-sidebar></app-sidebar>
+
+<div class="container">
+    <h1>Citas Médicas</h1>
+    <div class="filtros">
+    <input
+        type="text"
+        placeholder="Buscar paciente (RUT)"
+        [(ngModel)]="filtroPaciente">
+    <input
+        type="text"
+        placeholder="Buscar profesional (RUT)"
+        [(ngModel)]="filtroMedico">
+    <input
+        type="date"
+        [(ngModel)]="fechaFiltro">
+    <button (click)="buscarCitas()">
+        Buscar
+    </button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Paciente</th>
+                <th>Profesional</th>
+                <th>Servicio</th>
+                <th>Box</th>
+                <th>Piso</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cita of citasPaginadas">
+                <td>
+                    {{ cita.FECHA | date:'dd/MM/yyyy' }}
+                </td>
+                <td>
+                    {{ cita.HORA | date:'HH:mm' }}
+                </td>
+                <td>
+                    {{ cita.NOMBRE_PACIENTE }}
+                </td>
+                <td>
+                    {{ cita.NOMBRE_MEDICO }}
+                </td>
+                <td>
+                    {{ cita.SERVICIO }}
+                </td>
+                <td>
+                    {{ cita.BOX }}
+                </td>
+                <td>
+                    {{ cita.PISO }}
+                </td>
+                <td>
+                    <select
+                        [(ngModel)]="cita.ESTADO_CITA"
+                        (change)="actualizarEstado(cita)">
+                        <option value="PENDIENTE" [disabled]="cita.ESTADO_CITA !== 'PENDIENTE'">
+                            Pendiente
+                        </option>
+
+                        <option value="CONFIRMADA">
+                            Confirmada
+                        </option>
+
+                        <option value="ATENDIDA">
+                            Atendida
+                        </option>
+
+                        <option value="NO_ASISTIO">
+                            No asistió
+                        </option>
+
+                        <option value="CANCELADA">
+                            Cancelada
+                        </option>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="paginador" *ngIf="citasPaginadas.length > 10">
+        <button
+            (click)="paginaAnterior()"
+            [disabled]="paginaActual === 1">
+            ⬅ Anterior
+        </button>
+        <span>
+            Página
+            {{ paginaActual }}
+            de
+            {{ totalPaginas }}
+        </span>
+        <button
+            (click)="paginaSiguiente()"
+            [disabled]="paginaActual === totalPaginas">
+            Siguiente ➡
+        </button>
+    </div>
+</div>
