@@ -60,7 +60,8 @@
             mode="ios"
             placeholder="-- Selecciona un profesional --" 
             [(ngModel)]="medicoSeleccionado" 
-            (ionChange)="cargarAgenda()">
+            (ionChange)="cargarAgenda()"
+            [interfaceOptions]="{ cssClass: 'select-ancho-medicos' }">
             <ion-select-option *ngFor="let med of listaMedicos" [value]="med">
               {{ med.NOMB_MED }} {{ med.APELL_PAT_MED }}
             </ion-select-option>
@@ -158,4 +159,5 @@
     </ng-template>
   </ion-modal>
 
+  
 </ion-content>

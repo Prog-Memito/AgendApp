@@ -41,7 +41,8 @@ export const adminGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: 
             '/control-medico',
             '/odontologia',
             '/psicologo',
-            '/agendar'
+            '/agendar',
+            '/perfil'
           ];
 
           // SOME entra a TODO

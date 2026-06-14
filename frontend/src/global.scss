@@ -35,3 +35,29 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+/* 🩺 Ajuste definitivo para ensanchar el menú desplegable de médicos */
+.select-ancho-medicos {
+  --width: 480px !important;
+  --min-width: 480px !important;
+  --max-width: 90vw !important;
+
+  // Forzamos la caja contenedora real generada por Ionic en el DOM raíz
+  .popover-content {
+    width: 480px !important;
+    min-width: 480px !important;
+    max-width: 90vw !important;
+    border-radius: 12px !important;
+  }
+
+  // Estilos internos de los renglones médicos
+  ion-select-popover {
+    ion-item {
+      font-size: 14px !important;
+      --padding-start: 16px !important;
+      --padding-end: 16px !important;
+      --color: #011a33 !important;
+    }
+  }
+}
